@@ -1,16 +1,8 @@
 import { CreepMemoryBase, Role, CreepAction } from './creep-base'
 import {
-  findCreepsOfRoleInRoom,
-  findClosestCreepWithCapacityByPath,
-  harvestClosestSourceByRange,
-  transferToCreep,
-  transferToSpawn,
   setAction,
-  findClosestExtensionWithCapacityByPath,
-  transferToExtension,
-  harvestClosestSourceByPath,
-  findClosestStructureWithCapacityByPath,
-  transferToStructure
+  moveAndHarvestClosestSourceByPath,
+  findCreepsOfRoleInRange
 } from './helper-functions'
 
 function performActionTransitions(creep: Creep) {
@@ -32,14 +24,18 @@ function performActionTransitions(creep: Creep) {
 }
 
 function transfer(creep: Creep) {
-  let targetCreep: Creep
-  let targetStructure: Structure
-  if ((targetStructure = findClosestStructureWithCapacityByPath(creep.pos))) {
-    transferToStructure(creep, targetStructure, RESOURCE_ENERGY)
-  } else if ((targetCreep = findCreepsOfRoleInRoom(Role.BUILDER, creep.room)[0]) != undefined) {
-    transferToCreep(creep, targetCreep, RESOURCE_ENERGY)
-  } else if ((targetCreep = findClosestCreepWithCapacityByPath(creep.pos)) != undefined) {
-    transferToCreep(creep, targetCreep, RESOURCE_ENERGY)
+  let adjacentCreeps = findCreepsOfRoleInRange(creep.pos, 1, [
+    Role.UPGRADER,
+    Role.WALKER,
+    Role.BUILDER
+  ])
+  if (adjacentCreeps.length) {
+    let targetCreep = adjacentCreeps.reduce((prev, curr) => {
+      return (curr.memory as CreepMemoryBase).role === Role.WALKER
+        ? curr
+        : curr.carry.energy > prev.carry.energy ? curr : prev
+    })
+    creep.transfer(targetCreep, RESOURCE_ENERGY)
   } else {
     setAction(creep, CreepAction.HARVEST)
   }
@@ -50,7 +46,7 @@ export function loop(creep: Creep) {
   const memory: CreepMemoryBase = creep.memory as any
   switch (memory.action) {
     case CreepAction.HARVEST:
-      harvestClosestSourceByPath(creep)
+      moveAndHarvestClosestSourceByPath(creep)
       break
     case CreepAction.TRANSFER:
       transfer(creep)

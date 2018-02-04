@@ -19,6 +19,7 @@ export enum Role {
   HARVESTER = 'HARVESTER',
   BUILDER = 'BUILDER',
   UPGRADER = 'UPGRADER',
+  WALKER = 'WALKER',
   BETTER_UPGRADER = 'BETTER_UPGRADER'
 }
 
@@ -26,5 +27,7 @@ export enum CreepAction {
   HARVEST = 0,
   BUILD = 1,
   TRANSFER = 2,
-  UPGRADE = 3
+  UPGRADE = 3,
+  COLLECT = 4,
+  REGENERATE = 5
 }

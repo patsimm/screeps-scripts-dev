@@ -4,48 +4,55 @@ export function setAction(creep: Creep, action: CreepAction) {
   const memory: CreepMemoryBase = creep.memory as any
   switch (action) {
     case CreepAction.BUILD:
-      creep.say('🚧 build')
+      creep.say('🚧')
       break
     case CreepAction.HARVEST:
-      creep.say('🔄 harvest')
+      creep.say('⛏')
       break
     case CreepAction.TRANSFER:
-      creep.say('➡️ transfer')
+      creep.say('📦')
       break
     case CreepAction.UPGRADE:
-      creep.say('⏫ upgrade')
+      creep.say('⏫')
+      break
+    case CreepAction.COLLECT:
+      creep.say('🤲')
       break
   }
   memory.action = action
 }
 
-export function upgradeController(creep: Creep, controller: StructureController) {
-  if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-    creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#3333ff' } })
+export function moveAndUpgradeController(creep: Creep, controller: StructureController) {
+  if (creep.upgradeController(controller) == ERR_NOT_IN_RANGE) {
+    creep.moveTo(controller, { visualizePathStyle: { stroke: '#3333ff' } })
   }
 }
 
-export function harvestClosestSourceByRange(creep: Creep) {
+export function moveAndHarvestClosestSourceByRange(creep: Creep) {
   const source = creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE)
   if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
     creep.moveTo(source.pos, { visualizePathStyle: { stroke: '#ffaa00' } })
   }
 }
 
-export function harvestClosestSourceByPath(creep: Creep) {
+export function moveAndHarvestClosestSourceByPath(creep: Creep) {
   const source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE)
   if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
     creep.moveTo(source.pos, { visualizePathStyle: { stroke: '#ffaa00' } })
   }
 }
 
-export function transferToCreep(creep: Creep, target: Creep, resourceType: ResourceConstant) {
+export function moveAndTransferToCreep(
+  creep: Creep,
+  target: Creep,
+  resourceType: ResourceConstant
+) {
   if (creep.transfer(target, resourceType) == ERR_NOT_IN_RANGE) {
     creep.moveTo(target, { visualizePathStyle: { stroke: '#33ff33' } })
   }
 }
 
-export function transferToSpawn(
+export function moveAndTransferToSpawn(
   creep: Creep,
   spawn: StructureSpawn,
   resourceType: ResourceConstant
@@ -55,7 +62,7 @@ export function transferToSpawn(
   }
 }
 
-export function transferToExtension(
+export function moveAndTransferToExtension(
   creep: Creep,
   spawn: StructureExtension,
   resourceType: ResourceConstant
@@ -65,7 +72,7 @@ export function transferToExtension(
   }
 }
 
-export function transferToStructure(
+export function moveAndTransferToStructure(
   creep: Creep,
   structure: Structure,
   resourceType: ResourceConstant
@@ -75,9 +82,19 @@ export function transferToStructure(
   }
 }
 
-export function buildSite(creep: Creep, site: ConstructionSite) {
+export function moveAndBuildSite(creep: Creep, site: ConstructionSite) {
   if (creep.build(site) == ERR_NOT_IN_RANGE) {
     creep.moveTo(site, { visualizePathStyle: { stroke: '#ffffff' } })
+  }
+}
+
+export function moveToCollectionPoint(creep: Creep) {
+  let targetCreep: Creep
+  // let targetSource: Source
+  if ((targetCreep = findClosestCreepOfRoleWithoutCapacityByPath(creep.pos, [Role.HARVESTER]))) {
+    creep.moveTo(targetCreep, { visualizePathStyle: { stroke: '#ffaa00' } })
+  } else if ((targetCreep = findClosestCreepOfRoleByPath(creep.pos, [Role.HARVESTER]))) {
+    creep.moveTo(targetCreep, { visualizePathStyle: { stroke: '#ffaa00' } })
   }
 }
 
@@ -90,12 +107,70 @@ export function findCreepsOfRoleInRoom(role: Role, room: Room): Creep[] {
   })
 }
 
-export function findClosestCreepWithCapacityByPath(pos: RoomPosition): Creep {
-  return pos.findClosestByPath(FIND_MY_CREEPS, {
-    filter: foundCreep => {
-      return foundCreep.carry.energy < foundCreep.carryCapacity
-    }
+export function findCreepsOfRoleInRange(pos: RoomPosition, range: number, roles: Role[]) {
+  return pos.findInRange(FIND_MY_CREEPS, range, {
+    filter: (foundCreep: Creep) => roles.indexOf((foundCreep.memory as CreepMemoryBase).role) !== -1
   })
+}
+
+export function findClosestCreepOfRoleByPath(pos: RoomPosition, roles: Role[]): Creep {
+  return pos.findClosestByPath(FIND_MY_CREEPS, {
+    filter: foundCreep => roles.indexOf((foundCreep.memory as CreepMemoryBase).role) !== -1
+  })
+}
+
+export function findClosestCreepWithCapacityByPath(
+  pos: RoomPosition,
+  filter?: FilterFunction<FIND_MY_CREEPS>
+): Creep {
+  return pos.findClosestByPath(FIND_MY_CREEPS, {
+    filter: foundCreep =>
+      foundCreep.carry.energy < foundCreep.carryCapacity && (filter ? filter(foundCreep) : true)
+  })
+}
+
+export function findClosestCreepOfRoleWithCapacityByPath(pos: RoomPosition, roles: Role[]): Creep {
+  return findClosestCreepWithCapacityByPath(
+    pos,
+    foundCreep => roles.indexOf((foundCreep.memory as CreepMemoryBase).role) !== -1
+  )
+}
+
+export function findClosestCreepWithCapacityByRange(
+  pos: RoomPosition,
+  filter?: FilterFunction<FIND_MY_CREEPS>
+): Creep {
+  return pos.findClosestByRange(FIND_MY_CREEPS, {
+    filter: foundCreep =>
+      foundCreep.carry.energy < foundCreep.carryCapacity && (filter ? filter(foundCreep) : true)
+  })
+}
+
+export function findClosestCreepOfRoleWithCapacityByRange(pos: RoomPosition, roles: Role[]): Creep {
+  return findClosestCreepWithCapacityByRange(
+    pos,
+    foundCreep => roles.indexOf((foundCreep.memory as CreepMemoryBase).role) !== -1
+  )
+}
+
+export function findClosestCreepWithoutCapacityByPath(
+  pos: RoomPosition,
+  filter?: FilterFunction<FIND_MY_CREEPS>
+): Creep {
+  return pos.findClosestByPath(FIND_MY_CREEPS, {
+    filter: foundCreep =>
+      foundCreep.carry.energy == foundCreep.carryCapacity && (filter ? filter(foundCreep) : true)
+  })
+}
+
+export function findClosestCreepOfRoleWithoutCapacityByPath(
+  pos: RoomPosition,
+  roles: Role[]
+): Creep {
+  return findClosestCreepWithoutCapacityByPath(
+    pos,
+    foundCreep => roles.indexOf((foundCreep.memory as CreepMemoryBase).role) !== -1
+  )
 }
 
 function isStructureExtensionWithCapacity(structure: Structure): boolean {
@@ -124,4 +199,19 @@ export function findClosestStructureWithCapacityByPath(pos: RoomPosition): Struc
       isStructureExtensionWithCapacity(foundStructure) ||
       isStructureSpawnWithCapacity(foundStructure)
   })
+}
+
+export function findAdjacentStructuresWithCapacity(pos: RoomPosition): Structure[] {
+  return pos.findInRange(FIND_MY_STRUCTURES, 1, {
+    filter: (foundStructure: Structure) =>
+      isStructureExtensionWithCapacity(foundStructure) ||
+      isStructureSpawnWithCapacity(foundStructure)
+  })
+}
+
+export function findSiteWithHighestProgressInRoom(room: Room): ConstructionSite {
+  var sitesInRoom = room.find(FIND_CONSTRUCTION_SITES)
+  if (sitesInRoom.length) {
+    return sitesInRoom.reduce((prev, curr) => (prev.progress > curr.progress ? prev : curr))
+  }
 }

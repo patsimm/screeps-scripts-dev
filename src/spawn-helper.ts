@@ -25,6 +25,17 @@ export class SpawnHelper {
         this.spawn(typeCreeps.typeOptions, highestHarvesterIndex + 1)
       }
     })
+
+    const adjacentLowHealthCreeps = this.structureSpawn.pos.findInRange(FIND_MY_CREEPS, 1, {
+      filter: (foundCreep: Creep) => foundCreep.ticksToLive < 200
+    })
+    if (adjacentLowHealthCreeps.length) {
+      this.structureSpawn.renewCreep(
+        adjacentLowHealthCreeps.reduce(
+          (prev, curr) => (prev.ticksToLive < curr.ticksToLive ? prev : curr)
+        )
+      )
+    }
   }
 
   getHighestIndex = (creeps: Creep[]): number => {

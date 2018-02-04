@@ -1,21 +1,21 @@
-import { upgradeController, setAction, harvestClosestSourceByRange } from './helper-functions'
+import { moveAndUpgradeController, setAction, moveToCollectionPoint } from './helper-functions'
 import { CreepMemoryBase, CreepAction } from './creep-base'
 
 function performActionTransitions(creep: Creep) {
   const memory = creep.memory as CreepMemoryBase
   switch (memory.action) {
-    case CreepAction.HARVEST:
+    case CreepAction.COLLECT:
       if (creep.carry.energy == creep.carryCapacity) {
         setAction(creep, CreepAction.UPGRADE)
       }
       break
     case CreepAction.UPGRADE:
       if (creep.carry.energy == 0) {
-        setAction(creep, CreepAction.HARVEST)
+        setAction(creep, CreepAction.COLLECT)
       }
       break
     default:
-      setAction(creep, CreepAction.HARVEST)
+      setAction(creep, CreepAction.COLLECT)
   }
 }
 
@@ -24,11 +24,11 @@ export function loop(creep: Creep) {
 
   const memory = creep.memory as CreepMemoryBase
   switch (memory.action) {
-    case CreepAction.HARVEST:
-      harvestClosestSourceByRange(creep)
+    case CreepAction.COLLECT:
+      moveToCollectionPoint(creep)
       break
     case CreepAction.UPGRADE:
-      upgradeController(creep, creep.room.controller)
+      moveAndUpgradeController(creep, creep.room.controller)
       break
   }
 }

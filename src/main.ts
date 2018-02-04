@@ -1,27 +1,28 @@
-import { loop as harvesterLoop } from './harvester'
+import { loop as harvesterLoop } from './role.harvester'
 import { CreepOptions, Role } from './creep-base'
 import { SpawnHelper, Spawn } from './spawn-helper'
-import { loop as upgraderLoop } from './upgrader'
-import { loop as builderLoop } from './builder'
+import { loop as upgraderLoop } from './role.upgrader'
+import { loop as builderLoop } from './role.builder'
+import { loop as walkerLoop } from './role.walker'
 
 const CreepTypes: CreepOptions[] = [
   {
     loop: harvesterLoop,
-    bodyParts: [WORK, CARRY, MOVE],
+    bodyParts: [WORK, WORK, WORK, CARRY, MOVE],
     role: Role.HARVESTER,
     maxAmount: 4
+  },
+  {
+    loop: walkerLoop,
+    bodyParts: [CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE],
+    role: Role.WALKER,
+    maxAmount: 2
   },
   {
     loop: upgraderLoop,
     bodyParts: [WORK, CARRY, MOVE],
     role: Role.UPGRADER,
-    maxAmount: 2
-  },
-  {
-    loop: upgraderLoop,
-    bodyParts: [WORK, WORK, CARRY, MOVE, MOVE, MOVE],
-    role: Role.BETTER_UPGRADER,
-    maxAmount: 1
+    maxAmount: 4
   },
   {
     loop: builderLoop,
