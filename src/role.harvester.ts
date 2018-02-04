@@ -63,6 +63,7 @@ export function loop(creep: Creep) {
       transfer(creep)
       break
     case CreepAction.REGENERATE:
+      creep.drop(RESOURCE_ENERGY)
       moveToClosestSpawnByPath(creep)
       break
   }
