@@ -2,11 +2,17 @@ import { CreepMemoryBase, Role, CreepAction } from './creep-base'
 import {
   setAction,
   moveAndHarvestClosestSourceByPath,
-  findCreepsOfRoleInRange
+  findCreepsOfRoleInRange,
+  moveToClosestSpawnByPath
 } from './helper-functions'
 
 function performActionTransitions(creep: Creep) {
   const memory: CreepMemoryBase = creep.memory as any
+
+  if (creep.ticksToLive < 200) {
+    setAction(creep, CreepAction.REGENERATE)
+  }
+
   switch (memory.action) {
     case CreepAction.HARVEST:
       if (creep.carry.energy == creep.carryCapacity) {
@@ -15,6 +21,11 @@ function performActionTransitions(creep: Creep) {
       break
     case CreepAction.TRANSFER:
       if (creep.carry.energy == 0) {
+        setAction(creep, CreepAction.HARVEST)
+      }
+      break
+    case CreepAction.REGENERATE:
+      if (creep.ticksToLive > 700) {
         setAction(creep, CreepAction.HARVEST)
       }
       break
@@ -50,6 +61,9 @@ export function loop(creep: Creep) {
       break
     case CreepAction.TRANSFER:
       transfer(creep)
+      break
+    case CreepAction.REGENERATE:
+      moveToClosestSpawnByPath(creep)
       break
   }
 }

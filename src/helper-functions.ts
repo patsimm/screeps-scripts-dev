@@ -18,6 +18,8 @@ export function setAction(creep: Creep, action: CreepAction) {
     case CreepAction.COLLECT:
       creep.say('🤲')
       break
+    case CreepAction.REGENERATE:
+      creep.say('😴')
   }
   memory.action = action
 }
@@ -50,6 +52,12 @@ export function moveAndTransferToCreep(
   if (creep.transfer(target, resourceType) == ERR_NOT_IN_RANGE) {
     creep.moveTo(target, { visualizePathStyle: { stroke: '#33ff33' } })
   }
+}
+
+export function moveToClosestSpawnByPath(creep: Creep) {
+  creep.moveTo(creep.pos.findClosestByPath(FIND_MY_SPAWNS), {
+    visualizePathStyle: { stroke: '#ffff33' }
+  })
 }
 
 export function moveAndTransferToSpawn(
