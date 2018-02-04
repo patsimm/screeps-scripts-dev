@@ -8,25 +8,25 @@ import { loop as walkerLoop } from './role.walker'
 const CreepTypes: CreepOptions[] = [
   {
     loop: harvesterLoop,
-    bodyParts: [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE],
+    bodyParts: [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE],
     role: Role.HARVESTER,
     maxAmount: 4
   },
   {
     loop: walkerLoop,
-    bodyParts: [CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE],
+    bodyParts: [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
     role: Role.WALKER,
     maxAmount: 2
   },
   {
     loop: upgraderLoop,
-    bodyParts: [WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE],
+    bodyParts: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
     role: Role.UPGRADER,
     maxAmount: 4
   },
   {
     loop: builderLoop,
-    bodyParts: [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
+    bodyParts: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
     role: Role.BUILDER,
     maxAmount: 3
   }
