@@ -99,16 +99,31 @@ export function moveAndBuildSite(creep: Creep, site: ConstructionSite) {
 export function moveToCollectionPoint(creep: Creep) {
   let targetCreep: Creep
   // let targetSource: Source
-  if ((targetCreep = findClosestTransferringCreepByPath(creep.pos))) {
+  if (
+    (targetCreep = findClosestCreepOfRolePerformingActionByPath(
+      creep.pos,
+      [Role.HARVESTER],
+      CreepAction.TRANSFER
+    ))
+  ) {
     creep.moveTo(targetCreep, { visualizePathStyle: { stroke: '#ffaa00' } })
   } else if ((targetCreep = findClosestCreepOfRoleByPath(creep.pos, [Role.HARVESTER]))) {
     creep.moveTo(targetCreep, { visualizePathStyle: { stroke: '#ffaa00' } })
   }
 }
 
-export function findClosestTransferringCreepByPath(pos: RoomPosition) {
+function isCreepOfRolePerformingAction(creep: Creep, roles: Role[], action: CreepAction): boolean {
+  const memory = creep.memory as CreepMemoryBase
+  return roles.indexOf(memory.role) !== -1 && memory.action === action
+}
+
+export function findClosestCreepOfRolePerformingActionByPath(
+  pos: RoomPosition,
+  roles: Role[],
+  action: CreepAction
+) {
   return pos.findClosestByPath(FIND_MY_CREEPS, {
-    filter: foundCreep => (foundCreep.memory as CreepMemoryBase).action === CreepAction.TRANSFER
+    filter: foundCreep => isCreepOfRolePerformingAction(foundCreep, roles, action)
   })
 }
 
