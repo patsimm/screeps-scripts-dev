@@ -1,0 +1,17 @@
+{
+  "name": "screeps-patsimm",
+  "version": "0.0.1",
+  "main": "main.js",
+  "author": "patsimm",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "sync": "./sync.sh"
+  },
+  "devDependencies": {
+    "@types/screeps": "^2.2.0",
+    "typescript": "^2.7.1"
+  },
+  "dependencies": {}
+}
