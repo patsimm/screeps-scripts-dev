@@ -1,13 +1,13 @@
 import { CreepMemoryBase, CreepAction, Role } from './creep-base'
 import {
   setAction,
-  findClosestStructureWithCapacityByPath,
   moveAndTransferToStructure,
   moveAndTransferToCreep,
   findClosestCreepOfRoleWithCapacityByPath,
   moveToCollectionPoint,
   findAdjacentStructuresWithCapacity,
-  moveToClosestSpawnByPath
+  moveToClosestSpawnByPath,
+  findClosestStructureWithCapacityByRange
 } from './helper-functions'
 
 function performActionTransitions(creep: Creep) {
@@ -41,7 +41,7 @@ function performActionTransitions(creep: Creep) {
 function transfer(creep: Creep) {
   let targetCreep: Creep
   let targetStructure: Structure
-  if ((targetStructure = findClosestStructureWithCapacityByPath(creep.pos))) {
+  if ((targetStructure = findClosestStructureWithCapacityByRange(creep.pos))) {
     moveAndTransferToStructure(creep, targetStructure, RESOURCE_ENERGY)
   } else if (
     (targetCreep = findClosestCreepOfRoleWithCapacityByPath(creep.pos, [Role.BUILDER])) != undefined
