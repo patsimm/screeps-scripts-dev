@@ -6,11 +6,16 @@ import {
   moveAndTransferToCreep,
   findClosestCreepOfRoleWithCapacityByPath,
   moveToCollectionPoint,
-  findAdjacentStructuresWithCapacity
+  findAdjacentStructuresWithCapacity,
+  moveToClosestSpawnByPath
 } from './helper-functions'
 
 function performActionTransitions(creep: Creep) {
   const memory = creep.memory as CreepMemoryBase
+
+  if (creep.ticksToLive < 200) {
+    setAction(creep, CreepAction.REGENERATE)
+  }
 
   switch (memory.action) {
     case CreepAction.COLLECT:
@@ -20,6 +25,11 @@ function performActionTransitions(creep: Creep) {
       break
     case CreepAction.TRANSFER:
       if (creep.carry.energy == 0) {
+        setAction(creep, CreepAction.COLLECT)
+      }
+      break
+    case CreepAction.REGENERATE:
+      if (creep.ticksToLive > 700) {
         setAction(creep, CreepAction.COLLECT)
       }
       break
@@ -65,6 +75,9 @@ export function loop(creep: Creep) {
       break
     case CreepAction.TRANSFER:
       transfer(creep)
+      break
+    case CreepAction.REGENERATE:
+      moveToClosestSpawnByPath(creep)
       break
   }
 }

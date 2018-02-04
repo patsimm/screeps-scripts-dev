@@ -27,7 +27,7 @@ export class SpawnHelper {
     })
 
     const adjacentLowHealthCreeps = this.structureSpawn.pos.findInRange(FIND_MY_CREEPS, 1, {
-      filter: (foundCreep: Creep) => foundCreep.ticksToLive < 200
+      filter: (foundCreep: Creep) => foundCreep.ticksToLive < 700
     })
     if (adjacentLowHealthCreeps.length) {
       this.structureSpawn.renewCreep(

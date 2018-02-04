@@ -1,8 +1,18 @@
-import { moveAndUpgradeController, setAction, moveToCollectionPoint } from './helper-functions'
+import {
+  moveAndUpgradeController,
+  setAction,
+  moveToCollectionPoint,
+  moveToClosestSpawnByPath
+} from './helper-functions'
 import { CreepMemoryBase, CreepAction } from './creep-base'
 
 function performActionTransitions(creep: Creep) {
   const memory = creep.memory as CreepMemoryBase
+
+  if (creep.ticksToLive < 200) {
+    setAction(creep, CreepAction.REGENERATE)
+  }
+
   switch (memory.action) {
     case CreepAction.COLLECT:
       if (creep.carry.energy == creep.carryCapacity) {
@@ -11,6 +21,11 @@ function performActionTransitions(creep: Creep) {
       break
     case CreepAction.UPGRADE:
       if (creep.carry.energy == 0) {
+        setAction(creep, CreepAction.COLLECT)
+      }
+      break
+    case CreepAction.REGENERATE:
+      if (creep.ticksToLive > 700) {
         setAction(creep, CreepAction.COLLECT)
       }
       break
@@ -29,6 +44,9 @@ export function loop(creep: Creep) {
       break
     case CreepAction.UPGRADE:
       moveAndUpgradeController(creep, creep.room.controller)
+      break
+    case CreepAction.REGENERATE:
+      moveToClosestSpawnByPath(creep)
       break
   }
 }
