@@ -47,7 +47,7 @@ function transfer(creep: Creep) {
         : curr.carry.energy > prev.carry.energy ? curr : prev
     })
     creep.transfer(targetCreep, RESOURCE_ENERGY)
-  } else {
+  } else if (creep.carry.energy < creep.carryCapacity) {
     setAction(creep, CreepAction.HARVEST)
   }
 }
