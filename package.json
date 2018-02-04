@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "yarn build && yarn sync",
+    "start": "yarn build && yarn sync dev",
     "build": "tsc",
     "sync": "./sync.sh"
   },

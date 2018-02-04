@@ -9,13 +9,13 @@ const CreepTypes: CreepOptions[] = [
     loop: harvesterLoop,
     bodyParts: [WORK, CARRY, MOVE],
     role: Role.HARVESTER,
-    maxAmount: 2
+    maxAmount: 4
   },
   {
     loop: upgraderLoop,
     bodyParts: [WORK, CARRY, MOVE],
     role: Role.UPGRADER,
-    maxAmount: 6
+    maxAmount: 2
   },
   {
     loop: upgraderLoop,
