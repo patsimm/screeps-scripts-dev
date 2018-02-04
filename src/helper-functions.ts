@@ -96,6 +96,21 @@ export function moveAndBuildSite(creep: Creep, site: ConstructionSite) {
   }
 }
 
+export function moveAndRepairStructure(creep: Creep, structure: Structure) {
+  if (creep.repair(structure) == ERR_NOT_IN_RANGE) {
+    creep.moveTo(structure, { visualizePathStyle: { stroke: '#ffffff' } })
+  }
+}
+
+export function moveToContainerAndWithdraw(
+  creep: Creep,
+  container: StructureStorage | StructureContainer
+) {
+  if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+    creep.moveTo(container, { visualizePathStyle: { stroke: '#ffaa00' } })
+  }
+}
+
 export function moveToCollectionPoint(creep: Creep) {
   let targetCreep: Creep
   // let targetSource: Source
@@ -202,6 +217,17 @@ export function findClosestCreepOfRoleWithoutCapacityByPath(
   )
 }
 
+export function findClosestContainerWithEnergyByRange(
+  pos: RoomPosition
+): StructureContainer | StructureStorage {
+  return pos.findClosestByRange(FIND_MY_STRUCTURES, {
+    filter: (foundStructure: Structure) =>
+      (foundStructure.structureType === STRUCTURE_CONTAINER ||
+        foundStructure.structureType === STRUCTURE_STORAGE) &&
+      (foundStructure as StructureStorage | StructureContainer).store.energy > 0
+  }) as StructureContainer | StructureStorage
+}
+
 function isStructureExtensionWithCapacity(structure: Structure): boolean {
   return (
     structure.structureType === STRUCTURE_EXTENSION &&
@@ -216,6 +242,33 @@ function isStructureSpawnWithCapacity(structure: Structure): boolean {
   )
 }
 
+function isStructureContainerWithCapacity(structure: Structure): boolean {
+  return (
+    structure.structureType === STRUCTURE_CONTAINER &&
+    (structure as StructureContainer).store.energy < (structure as StructureContainer).storeCapacity
+  )
+}
+
+function isStructureStorageWithCapacity(structure: Structure): boolean {
+  return (
+    structure.structureType === STRUCTURE_CONTAINER &&
+    (structure as StructureStorage).store.energy < (structure as StructureStorage).storeCapacity
+  )
+}
+
+function isStructureWithCapacity(structure: Structure): boolean {
+  return (
+    isStructureContainerWithCapacity(structure) ||
+    isStructureExtensionWithCapacity(structure) ||
+    isStructureSpawnWithCapacity(structure) ||
+    isStructureStorageWithCapacity(structure)
+  )
+}
+
+function isStructureLowHealth(structure: Structure): boolean {
+  return structure.hits / structure.hitsMax <= 0.25
+}
+
 export function findClosestExtensionWithCapacityByPath(pos: RoomPosition): StructureExtension {
   return pos.findClosestByPath(FIND_MY_STRUCTURES, {
     filter: foundStructure => isStructureExtensionWithCapacity(foundStructure)
@@ -224,10 +277,23 @@ export function findClosestExtensionWithCapacityByPath(pos: RoomPosition): Struc
 
 export function findClosestStructureWithCapacityByPath(pos: RoomPosition): Structure {
   return pos.findClosestByPath(FIND_MY_STRUCTURES, {
-    filter: foundStructure =>
-      isStructureExtensionWithCapacity(foundStructure) ||
-      isStructureSpawnWithCapacity(foundStructure)
+    filter: foundStructure => isStructureWithCapacity(foundStructure)
   })
+}
+
+export function findClosestStructureWithCapacityByRange(pos: RoomPosition): Structure {
+  return pos.findClosestByRange(FIND_MY_STRUCTURES, {
+    filter: foundStructure => isStructureWithCapacity(foundStructure)
+  })
+}
+
+export function findStructureToRepairWithLowestHealthInRoom(room: Room): Structure {
+  const structuresLowHealth = room.find(FIND_MY_STRUCTURES, {
+    filter: foundStructure => isStructureLowHealth(foundStructure)
+  })
+  if (structuresLowHealth.length) {
+    return structuresLowHealth.reduce((prev, curr) => (prev.hits > curr.hits ? prev : curr))
+  }
 }
 
 export function findAdjacentStructuresWithCapacity(pos: RoomPosition): Structure[] {

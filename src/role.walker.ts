@@ -1,13 +1,13 @@
 import { CreepMemoryBase, CreepAction, Role } from './creep-base'
 import {
   setAction,
-  findClosestStructureWithCapacityByPath,
   moveAndTransferToStructure,
   moveAndTransferToCreep,
   findClosestCreepOfRoleWithCapacityByPath,
   moveToCollectionPoint,
   findAdjacentStructuresWithCapacity,
-  moveToClosestSpawnByPath
+  moveToClosestSpawnByPath,
+  findClosestStructureWithCapacityByRange
 } from './helper-functions'
 
 function performActionTransitions(creep: Creep) {
@@ -41,7 +41,7 @@ function performActionTransitions(creep: Creep) {
 function transfer(creep: Creep) {
   let targetCreep: Creep
   let targetStructure: Structure
-  if ((targetStructure = findClosestStructureWithCapacityByPath(creep.pos))) {
+  if ((targetStructure = findClosestStructureWithCapacityByRange(creep.pos))) {
     moveAndTransferToStructure(creep, targetStructure, RESOURCE_ENERGY)
   } else if (
     (targetCreep = findClosestCreepOfRoleWithCapacityByPath(creep.pos, [Role.BUILDER])) != undefined
@@ -64,6 +64,10 @@ function doAlways(creep: Creep) {
   }
 }
 
+function findDroppedResourceInRoom(room: Room): Resource {
+  return room.find(FIND_DROPPED_RESOURCES)[0]
+}
+
 export function loop(creep: Creep) {
   performActionTransitions(creep)
   doAlways(creep)
@@ -71,7 +75,14 @@ export function loop(creep: Creep) {
   const memory = creep.memory as CreepMemoryBase
   switch (memory.action) {
     case CreepAction.COLLECT:
-      moveToCollectionPoint(creep)
+      let resource: Resource
+      if ((resource = findDroppedResourceInRoom(creep.room))) {
+        if (creep.pickup(resource) === ERR_NOT_IN_RANGE) {
+          creep.moveTo(resource)
+        }
+      } else {
+        moveToCollectionPoint(creep)
+      }
       break
     case CreepAction.TRANSFER:
       transfer(creep)

@@ -5,7 +5,9 @@ import {
   moveAndBuildSite,
   findSiteWithHighestProgressInRoom,
   moveToCollectionPoint,
-  moveToClosestSpawnByPath
+  moveToClosestSpawnByPath,
+  findStructureToRepairWithLowestHealthInRoom,
+  moveAndRepairStructure
 } from './helper-functions'
 
 function performActionTransitions(creep: Creep) {
@@ -53,7 +55,10 @@ export function loop(creep: Creep) {
   switch (memory.action) {
     case CreepAction.BUILD:
       let targetSite: ConstructionSite
-      if ((targetSite = findSiteWithHighestProgressInRoom(creep.room)) != undefined) {
+      let targetStructure: Structure
+      if ((targetStructure = findStructureToRepairWithLowestHealthInRoom(creep.room))) {
+        moveAndRepairStructure(creep, targetStructure)
+      } else if ((targetSite = findSiteWithHighestProgressInRoom(creep.room))) {
         moveAndBuildSite(creep, targetSite)
       }
       break

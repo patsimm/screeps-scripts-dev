@@ -16,6 +16,7 @@ export class SpawnHelper {
   }
 
   loop = () => {
+    this.renewAndRecycle()
     this.creeps.forEach(typeCreeps => {
       const highestHarvesterIndex = this.getHighestIndex(typeCreeps.creeps)
       if (
@@ -25,16 +26,26 @@ export class SpawnHelper {
         this.spawn(typeCreeps.typeOptions, highestHarvesterIndex + 1)
       }
     })
+  }
 
+  renewAndRecycle() {
     const adjacentLowHealthCreeps = this.structureSpawn.pos.findInRange(FIND_MY_CREEPS, 1, {
       filter: (foundCreep: Creep) => foundCreep.ticksToLive < 700
     })
     if (adjacentLowHealthCreeps.length) {
-      this.structureSpawn.renewCreep(
-        adjacentLowHealthCreeps.reduce(
-          (prev, curr) => (prev.ticksToLive < curr.ticksToLive ? prev : curr)
-        )
+      const targetCreep = adjacentLowHealthCreeps.reduce(
+        (prev, curr) => (prev.ticksToLive < curr.ticksToLive ? prev : curr)
       )
+
+      const targetBodyParts = targetCreep.body.map(bodyPartDefinition => bodyPartDefinition.type)
+      const actualRoleBodyParts = this.creeps.filter(
+        creeps => creeps.typeOptions.role === (targetCreep.memory as CreepMemoryBase).role
+      )[0].typeOptions.bodyParts
+      if (!targetBodyParts.every((bodyPart, i) => actualRoleBodyParts[i] === bodyPart)) {
+        this.structureSpawn.recycleCreep(targetCreep)
+      } else {
+        this.structureSpawn.renewCreep(targetCreep)
+      }
     }
   }
 
