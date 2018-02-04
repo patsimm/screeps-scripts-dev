@@ -1,18 +1,11 @@
 import { CreepMemoryBase, CreepAction } from './creep-base'
 import {
-  harvestClosestSourceByRange,
-  transferToCreep,
-  upgradeController,
+  moveAndUpgradeController,
   setAction,
-  buildSite
+  moveAndBuildSite,
+  findSiteWithHighestProgressInRoom,
+  moveToCollectionPoint
 } from './helper-functions'
-
-function findSiteWithHighestProgressInRoom(room: Room): ConstructionSite {
-  var sitesInRoom = room.find(FIND_CONSTRUCTION_SITES)
-  if (sitesInRoom.length) {
-    return sitesInRoom.reduce((prev, curr) => (prev.progress > curr.progress ? prev : curr))
-  }
-}
 
 function performActionTransitions(creep: Creep) {
   const sitesInRoom = creep.room.find(FIND_CONSTRUCTION_SITES)
@@ -20,10 +13,10 @@ function performActionTransitions(creep: Creep) {
   switch (memory.action) {
     case CreepAction.BUILD:
       if (creep.carry.energy == 0 || !sitesInRoom.length) {
-        setAction(creep, CreepAction.HARVEST)
+        setAction(creep, CreepAction.COLLECT)
       }
       break
-    case CreepAction.HARVEST:
+    case CreepAction.COLLECT:
       if (creep.carry.energy == creep.carryCapacity) {
         sitesInRoom.length
           ? setAction(creep, CreepAction.BUILD)
@@ -32,13 +25,13 @@ function performActionTransitions(creep: Creep) {
       break
     case CreepAction.UPGRADE:
       if (creep.carry.energy == 0) {
-        setAction(creep, CreepAction.HARVEST)
+        setAction(creep, CreepAction.COLLECT)
       } else if (sitesInRoom.length) {
         setAction(creep, CreepAction.BUILD)
       }
       break
     default:
-      setAction(creep, CreepAction.HARVEST)
+      setAction(creep, CreepAction.COLLECT)
   }
 }
 
@@ -50,14 +43,14 @@ export function loop(creep: Creep) {
     case CreepAction.BUILD:
       let targetSite: ConstructionSite
       if ((targetSite = findSiteWithHighestProgressInRoom(creep.room)) != undefined) {
-        buildSite(creep, targetSite)
+        moveAndBuildSite(creep, targetSite)
       }
       break
-    case CreepAction.HARVEST:
-      harvestClosestSourceByRange(creep)
+    case CreepAction.COLLECT:
+      moveToCollectionPoint(creep)
       break
     case CreepAction.UPGRADE:
-      upgradeController(creep, creep.room.controller)
+      moveAndUpgradeController(creep, creep.room.controller)
       break
   }
 }
