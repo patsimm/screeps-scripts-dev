@@ -48,6 +48,15 @@ export function loop() {
     }
   }
 
+  Game.spawns['Spawn1'].room
+    .find(FIND_STRUCTURES, foundStructure => foundStructure.structureType === STRUCTURE_TOWER)
+    .forEach((tower: StructureTower) => {
+      let hostileCreeps = Game.spawns['Spawn1'].room.find(FIND_HOSTILE_CREEPS)
+      if (hostileCreeps.length) {
+        tower.attack(hostileCreeps[0])
+      }
+    })
+
   const spawnHelper = new SpawnHelper(Spawn.SPAWN_1, creeps)
   spawnHelper.loop()
 

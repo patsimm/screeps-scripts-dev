@@ -256,12 +256,20 @@ function isStructureStorageWithCapacity(structure: Structure): boolean {
   )
 }
 
+function isStructureTowerWithCapacity(structure: Structure): boolean {
+  return (
+    structure.structureType === STRUCTURE_TOWER &&
+    (structure as StructureTower).energy < (structure as StructureTower).energyCapacity
+  )
+}
+
 function isStructureWithCapacity(structure: Structure): boolean {
   return (
     isStructureContainerWithCapacity(structure) ||
     isStructureExtensionWithCapacity(structure) ||
     isStructureSpawnWithCapacity(structure) ||
-    isStructureStorageWithCapacity(structure)
+    isStructureStorageWithCapacity(structure) ||
+    isStructureTowerWithCapacity(structure)
   )
 }
 
