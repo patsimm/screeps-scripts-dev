@@ -22,7 +22,7 @@ const CreepTypes: CreepOptions[] = [
     loop: upgraderLoop,
     bodyParts: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE],
     role: Role.UPGRADER,
-    maxAmount: 4
+    maxAmount: 5
   },
   {
     loop: builderLoop,
