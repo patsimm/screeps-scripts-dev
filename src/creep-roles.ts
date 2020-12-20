@@ -45,7 +45,7 @@ export const roleDefinitions: { [key in CreepRole]: CreepRoleDefinition } = {
   },
   combat: {
     bodyParts: [
-      [ATTACK, ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE], // 420
+      [ATTACK, ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE], // 490
     ],
     run: combat.run,
   },
