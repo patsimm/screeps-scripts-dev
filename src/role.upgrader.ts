@@ -1,11 +1,11 @@
 import { performAction, updateAction } from "./creep-actions"
 
 export const run = (creep: Creep) => {
-  if (!_.includes(["unloading", "harvesting"], creep.memory.action)) {
+  if (!_.includes(["upgrading", "harvesting"], creep.memory.action)) {
     updateAction(creep, "harvesting")
   }
   if (
-    creep.memory.action === "unloading" &&
+    creep.memory.action === "upgrading" &&
     creep.store[RESOURCE_ENERGY] == 0
   ) {
     updateAction(creep, "harvesting")
@@ -14,7 +14,7 @@ export const run = (creep: Creep) => {
     creep.memory.action === "harvesting" &&
     creep.store.getFreeCapacity() == 0
   ) {
-    updateAction(creep, "unloading")
+    updateAction(creep, "upgrading")
   }
 
   performAction(creep)

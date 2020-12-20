@@ -2,17 +2,33 @@ import { CreepRole, roleDefinitions } from "./creep-roles"
 
 const spawnCreep = (spawn: StructureSpawn, role: CreepRole) => {
   const roleDef = roleDefinitions[role]
-  spawn.spawnCreep(roleDef.bodyParts, role + Memory.creepCounter[role], {
-    memory: { role: role },
-  })
+  const status = spawn.spawnCreep(
+    roleDef.bodyParts,
+    role + Memory.creepCounter[role],
+    {
+      memory: { role: role, action: "idle" },
+    }
+  )
+  if (status === OK) {
+    Memory.creepCounter[role]++
+  }
+  return status
 }
 
 export const run = (spawn: StructureSpawn) => {
-  const harvestersInRoom = spawn.room.find(FIND_MY_CREEPS, {
-    filter: (creep) => creep.memory.role === "harvester",
-  })
+  const creepsByRole = _.groupBy(
+    spawn.room.find(FIND_MY_CREEPS),
+    (creep) => creep.memory.role
+  ) as { [key in CreepRole]?: Creep[] }
 
-  if (harvestersInRoom.length < spawn.room.memory.minHarvesters) {
-    spawnCreep(spawn, "harvester")
-  }
+  _.some(["harvester", "upgrader", "builder"] as const, (role) => {
+    if (
+      (creepsByRole[role]?.length || 0) <
+      spawn.room.memory.creepTargetAmounts[role]
+    ) {
+      spawn.room.visual.text(role, spawn.pos)
+      spawnCreep(spawn, role)
+      return true
+    }
+  })
 }
