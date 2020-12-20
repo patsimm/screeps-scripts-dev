@@ -12,7 +12,7 @@ const screepsTask = () =>
   src("dist/*.js").pipe(
     screeps({
       token: process.env.SCREEPS_API_KEY,
-      branch: "default",
+      branch: "dev",
     })
   )
 

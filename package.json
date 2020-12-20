@@ -6,9 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "yarn build && yarn sync dev",
-    "build": "tsc",
-    "sync": "./sync.sh"
+    "build": "gulp",
+    "sync": "gulp screeps"
   },
   "dependencies": {
     "@types/lodash": "^4.14.165",
