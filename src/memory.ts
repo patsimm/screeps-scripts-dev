@@ -1,4 +1,10 @@
 export const initialize = () => {
+  Object.keys(Memory.creeps).forEach((creepName) => {
+    if (!Game.creeps[creepName]) {
+      delete Memory.creeps[creepName]
+    }
+  })
+
   Memory.creepCounter = {
     harvester: Memory.creepCounter?.harvester || 0,
     builder: Memory.creepCounter?.builder || 0,
