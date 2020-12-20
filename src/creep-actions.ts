@@ -8,37 +8,67 @@ export type CreepAction =
   | "attacking"
   | "idle"
 
-export const performAction = (creep: Creep) =>
-  actions[creep.memory.action](creep)
+export const performAction = (creep: Creep) => {
+  const target = Game.getObjectById(creep.memory.actionTarget)
+  actions[creep.memory.action](creep, target)
+}
 
 export const updateAction = (creep: Creep, newAction: CreepAction) => {
+  const actionTarget = targeters[newAction](creep)
+  if (!actionTarget) {
+    creep.memory.action = "idle"
+    creep.memory.actionTarget = creep.id
+    return
+  }
+
   creep.memory.action = newAction
+  creep.memory.actionTarget = actionTarget
   creep.say(actionIcons[newAction] + " " + newAction)
 }
 
-const doUpgrade = (creep: Creep) => {
+const findUpgradeTarget = (creep: Creep) => {
   if (creep.room.controller) {
-    if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-      creep.moveTo(creep.room.controller)
-    }
+    return creep.room.controller.id
   }
 }
 
-const doBuild = (creep: Creep) => {
+const doUpgrade = (creep: Creep, target: any) => {
+  if (creep.upgradeController(target) == ERR_NOT_IN_RANGE) {
+    creep.moveTo(target)
+  }
+}
+
+const findBuildTarget = (creep: Creep) => {
   const constructionSites = creep.room.find(FIND_MY_CONSTRUCTION_SITES)
-  if (creep.build(constructionSites[0]) == ERR_NOT_IN_RANGE) {
-    creep.moveTo(constructionSites[0])
+  return constructionSites[0]?.id
+}
+
+const doBuild = (creep: Creep, target: any) => {
+  const buildStatus = creep.build(target)
+  if (buildStatus == ERR_NOT_IN_RANGE) {
+    creep.moveTo(target)
+  } else if (buildStatus == ERR_INVALID_TARGET) {
+    updateAction(creep, "building")
+    performAction(creep)
   }
 }
 
-const doHarvest = (creep: Creep) => {
-  const sources = creep.room.find(FIND_SOURCES_ACTIVE)
-  if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-    creep.moveTo(sources[0])
+const findHarvestTarget = (creep: Creep) => {
+  const source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
+    filter: (source) =>
+      source.pos.findInRange(FIND_HOSTILE_CREEPS, 5).length === 0 &&
+      source.pos.findInRange(FIND_HOSTILE_STRUCTURES, 5).length === 0,
+  })
+  return source?.id
+}
+
+const doHarvest = (creep: Creep, target: any) => {
+  if (creep.harvest(target) == ERR_NOT_IN_RANGE) {
+    creep.moveTo(target)
   }
 }
 
-const doUnload = (creep: Creep) => {
+const findUnloadTarget = (creep: Creep) => {
   const targets = creep.room.find(FIND_STRUCTURES, {
     filter: (structure) =>
       isStructureOfType(structure, [
@@ -47,30 +77,39 @@ const doUnload = (creep: Creep) => {
         STRUCTURE_EXTENSION,
       ]) && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
   })
-  if (targets[0]) {
-    if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-      creep.moveTo(targets[0])
+  return targets[0]?.id || creep.room.controller?.id
+}
+
+const doUnload = (creep: Creep, target: AnyStructure) => {
+  if (isStructureOfType(target, [STRUCTURE_CONTROLLER])) {
+    if (creep.upgradeController(target) === ERR_NOT_IN_RANGE) {
+      creep.moveTo(target)
     }
-  } else if (creep.room.controller) {
-    if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
-      creep.moveTo(creep.room.controller)
+  } else {
+    const transferStatus = creep.transfer(target, RESOURCE_ENERGY)
+    if (transferStatus === ERR_NOT_IN_RANGE) {
+      creep.moveTo(target)
+    } else if (transferStatus === ERR_FULL) {
+      updateAction(creep, "unloading")
+      performAction(creep)
     }
   }
 }
 
-const doAttack = (creep: Creep) => {
-  const targets = creep.room.find(FIND_HOSTILE_CREEPS)
-  if (targets[0]) {
-    const target = targets[0]
-    if (creep.body.length > target.body.length) {
-      if (creep.attack(targets[0]) === ERR_NOT_IN_RANGE) {
-        creep.moveTo(targets[0])
-      }
-    }
+const findAttackTarget = (creep: Creep) => {
+  const targets = creep.room.find(FIND_HOSTILE_CREEPS, {
+    filter: (hostileCreep) => creep.body.length > hostileCreep.body.length,
+  })
+  return targets[0]?.id
+}
+
+const doAttack = (creep: Creep, target: any) => {
+  if (creep.attack(target) === ERR_NOT_IN_RANGE) {
+    creep.moveTo(target)
   }
 }
 
-type CreepActionFunction = (creep: Creep) => void
+type CreepActionFunction = (creep: Creep, target: any) => void
 
 const actions: { [key in CreepAction]: CreepActionFunction } = {
   building: doBuild,
@@ -79,6 +118,17 @@ const actions: { [key in CreepAction]: CreepActionFunction } = {
   upgrading: doUpgrade,
   attacking: doAttack,
   idle: () => {},
+}
+
+type CreepActionTargeter = (creep: Creep) => Id<any> | undefined
+
+const targeters: { [key in CreepAction]: CreepActionTargeter } = {
+  building: findBuildTarget,
+  harvesting: findHarvestTarget,
+  unloading: findUnloadTarget,
+  upgrading: findUpgradeTarget,
+  attacking: findAttackTarget,
+  idle: () => undefined,
 }
 
 const actionIcons: { [key in CreepAction]: string } = {
