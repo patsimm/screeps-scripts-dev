@@ -2,6 +2,7 @@ import * as spawn from "./spawn"
 import * as memory from "./memory"
 import * as structures from "./structures"
 import { roleDefinitions } from "./creep-roles"
+import { performAction } from "./creep-actions"
 
 export const loop = () => {
   memory.initialize()
@@ -17,5 +18,6 @@ export const loop = () => {
   for (const creepName in Game.creeps) {
     const creep = Game.creeps[creepName]
     roleDefinitions[creep.memory.role].run(creep)
+    performAction(creep)
   }
 }

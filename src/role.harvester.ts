@@ -1,4 +1,4 @@
-import { performAction, updateAction } from "./creep-actions"
+import { updateAction } from "./creep-actions"
 
 export const run = (creep: Creep) => {
   if (!_.includes(["unloading", "harvesting"], creep.memory.action)) {
@@ -16,6 +16,4 @@ export const run = (creep: Creep) => {
   ) {
     updateAction(creep, "unloading")
   }
-
-  performAction(creep)
 }

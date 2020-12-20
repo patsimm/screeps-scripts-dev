@@ -1,4 +1,4 @@
-import { performAction, updateAction } from "./creep-actions"
+import { updateAction } from "./creep-actions"
 
 export const run = (creep: Creep) => {
   const constructionSites = creep.room.find(FIND_MY_CONSTRUCTION_SITES)
@@ -36,6 +36,4 @@ export const run = (creep: Creep) => {
   ) {
     updateAction(creep, "unloading")
   }
-
-  performAction(creep)
 }

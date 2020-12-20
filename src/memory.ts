@@ -9,6 +9,7 @@ export const initialize = () => {
     harvester: Memory.creepCounter?.harvester || 0,
     builder: Memory.creepCounter?.builder || 0,
     upgrader: Memory.creepCounter?.upgrader || 0,
+    combat: Memory.creepCounter?.combat || 0,
   }
 
   for (const roomName in Game.rooms) {
@@ -17,6 +18,7 @@ export const initialize = () => {
       harvester: room.memory.creepTargetAmounts?.harvester || 2,
       builder: room.memory.creepTargetAmounts?.builder || 3,
       upgrader: room.memory.creepTargetAmounts?.upgrader || 1,
+      combat: room.memory.creepTargetAmounts?.combat || 1,
     }
   }
 }

@@ -1,8 +1,9 @@
 import * as harvester from "./role.harvester"
 import * as builder from "./role.builder"
 import * as upgrader from "./role.upgrader"
+import * as combat from "./role.combat"
 
-export type CreepRole = "harvester" | "builder" | "upgrader"
+export type CreepRole = "harvester" | "builder" | "upgrader" | "combat"
 
 export interface CreepRoleDefinition {
   bodyParts: BodyPartConstant[]
@@ -32,5 +33,9 @@ export const roleDefinitions: { [key in CreepRole]: CreepRoleDefinition } = {
   upgrader: {
     bodyParts: [WORK, CARRY, MOVE, MOVE], // 250
     run: upgrader.run,
+  },
+  combat: {
+    bodyParts: [ATTACK, ATTACK, MOVE, MOVE], // 260
+    run: combat.run,
   },
 }

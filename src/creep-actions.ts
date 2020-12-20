@@ -5,6 +5,7 @@ export type CreepAction =
   | "building"
   | "upgrading"
   | "unloading"
+  | "attacking"
   | "idle"
 
 export const performAction = (creep: Creep) =>
@@ -47,12 +48,24 @@ const doUnload = (creep: Creep) => {
       ]) && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0,
   })
   if (targets[0]) {
-    if (creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+    if (creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
       creep.moveTo(targets[0])
     }
   } else if (creep.room.controller) {
-    if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+    if (creep.upgradeController(creep.room.controller) === ERR_NOT_IN_RANGE) {
       creep.moveTo(creep.room.controller)
+    }
+  }
+}
+
+const doAttack = (creep: Creep) => {
+  const targets = creep.room.find(FIND_HOSTILE_CREEPS)
+  if (targets[0]) {
+    const target = targets[0]
+    if (creep.body.length > target.body.length) {
+      if (creep.attack(targets[0]) === ERR_NOT_IN_RANGE) {
+        creep.moveTo(targets[0])
+      }
     }
   }
 }
@@ -64,6 +77,7 @@ const actions: { [key in CreepAction]: CreepActionFunction } = {
   harvesting: doHarvest,
   unloading: doUnload,
   upgrading: doUpgrade,
+  attacking: doAttack,
   idle: () => {},
 }
 
@@ -72,5 +86,6 @@ const actionIcons: { [key in CreepAction]: string } = {
   harvesting: "⛏",
   unloading: "📥",
   upgrading: "⏫",
+  attacking: "⚔️",
   idle: "😴",
 }
