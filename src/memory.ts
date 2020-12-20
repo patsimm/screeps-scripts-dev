@@ -21,4 +21,9 @@ export const initialize = () => {
       combat: room.memory.creepTargetAmounts?.combat || 1,
     }
   }
+
+  for (const spawnName in Game.spawns) {
+    const spawn = Game.spawns[spawnName]
+    spawn.memory.pathsBuilt = spawn.memory.pathsBuilt || []
+  }
 }

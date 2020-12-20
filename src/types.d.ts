@@ -13,6 +13,10 @@ declare global {
     creepTargetAmounts: { [key in CreepRole]: number }
   }
 
+  interface SpawnMemory {
+    pathsBuilt: Id<any>[]
+  }
+
   interface Memory {
     creepCounter: { [key in CreepRole]: number }
   }
