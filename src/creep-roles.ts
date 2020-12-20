@@ -6,7 +6,7 @@ import * as combat from "./role.combat"
 export type CreepRole = "harvester" | "builder" | "upgrader" | "combat"
 
 export interface CreepRoleDefinition {
-  bodyParts: BodyPartConstant[]
+  bodyParts: BodyPartConstant[][]
   run: (creep: Creep) => void
 }
 
@@ -23,19 +23,30 @@ export interface CreepRoleDefinition {
 
 export const roleDefinitions: { [key in CreepRole]: CreepRoleDefinition } = {
   harvester: {
-    bodyParts: [WORK, CARRY, MOVE, MOVE], // 250
+    bodyParts: [
+      [WORK, CARRY, MOVE, MOVE], // 250
+      [WORK, WORK, CARRY, CARRY, MOVE, MOVE], // 400
+    ],
     run: harvester.run,
   },
   builder: {
-    bodyParts: [WORK, CARRY, MOVE, MOVE], // 250
+    bodyParts: [
+      [WORK, CARRY, MOVE, MOVE], // 250
+      [WORK, WORK, CARRY, CARRY, MOVE, MOVE], // 400,
+    ],
     run: builder.run,
   },
   upgrader: {
-    bodyParts: [WORK, CARRY, MOVE, MOVE], // 250
+    bodyParts: [
+      [WORK, CARRY, MOVE, MOVE], // 250
+      [WORK, WORK, CARRY, CARRY, MOVE, MOVE], // 400
+    ],
     run: upgrader.run,
   },
   combat: {
-    bodyParts: [ATTACK, ATTACK, MOVE, MOVE], // 260
+    bodyParts: [
+      [ATTACK, ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE], // 420
+    ],
     run: combat.run,
   },
 }

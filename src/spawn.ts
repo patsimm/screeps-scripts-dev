@@ -2,17 +2,26 @@ import { CreepRole, roleDefinitions } from "./creep-roles"
 
 const spawnCreep = (spawn: StructureSpawn, role: CreepRole) => {
   const roleDef = roleDefinitions[role]
-  const status = spawn.spawnCreep(
-    roleDef.bodyParts,
-    role + Memory.creepCounter[role],
-    {
-      memory: { role: role, action: "idle", actionTarget: spawn.id },
+
+  roleDef.bodyParts.reverse().some((bodyParts, index) => {
+    const status = spawn.spawnCreep(
+      bodyParts,
+      role + Memory.creepCounter[role],
+      {
+        memory: { role: role, action: "idle", actionTarget: spawn.id },
+      }
+    )
+    if (status === OK) {
+      console.log(
+        "Spawned creep '" +
+          role +
+          "' level " +
+          (roleDef.bodyParts.length - index)
+      )
+      Memory.creepCounter[role]++
+      return true
     }
-  )
-  if (status === OK) {
-    Memory.creepCounter[role]++
-  }
-  return status
+  })
 }
 
 export const run = (spawn: StructureSpawn) => {
