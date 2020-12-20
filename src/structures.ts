@@ -20,6 +20,7 @@ export const run = (room: Room) => {
       const path = spawn.pos.findPathTo(source.pos, { ignoreCreeps: true })
       path.forEach(step => {
         room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD)
+        // TODO: Road must not be built on source itself
       })
       spawn.memory.pathsBuilt.push(source.id);
     }

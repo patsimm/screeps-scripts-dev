@@ -16,6 +16,15 @@ const screepsTask = () =>
     })
   )
 
+  const screepsTaskDefault = () =>
+  src("dist/*.js").pipe(
+    screeps({
+      token: process.env.SCREEPS_API_KEY,
+      branch: "default",
+    })
+  )
+
 exports.default = series(cleanTask, buildTask)
 exports.screeps = series(cleanTask, buildTask, screepsTask)
+exports.screepsDefault = series(cleanTask, buildTask, screepsTaskDefault)
 exports.clean = cleanTask
