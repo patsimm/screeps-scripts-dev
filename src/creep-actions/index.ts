@@ -1,10 +1,10 @@
-import building from "./building.action"
-import attacking from "./attacking.action"
-import harvesting from "./harvesting.action"
-import unloading from "./unloading.action"
-import upgrading from "./upgrading.action"
-import loading from "./loading.action"
-import transferring from "./transferring.action"
+import building from "./action.building"
+import attacking from "./action.attacking"
+import harvesting from "./action.harvesting"
+import unloading from "./action.unloading"
+import upgrading from "./action.upgrading"
+import loading from "./action.loading"
+import transferring from "./action.transferring"
 
 const actions: CreepActions = {
   building,

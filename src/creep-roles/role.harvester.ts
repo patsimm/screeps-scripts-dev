@@ -1,6 +1,7 @@
-import { updateAction } from "./creep-actions"
+import { CreepRoleDefinition } from "."
+import { updateAction } from "../creep-actions"
 
-export const run = (creep: Creep) => {
+const run = (creep: Creep) => {
   if (
     !_.includes(
       ["harvesting", "transferring", "unloading"],
@@ -74,3 +75,13 @@ export const run = (creep: Creep) => {
     }
   }
 }
+
+const role: CreepRoleDefinition = {
+  run,
+  bodyParts: [
+    [WORK, CARRY, MOVE, MOVE], // 250
+    [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], // 500
+  ],
+}
+
+export default role

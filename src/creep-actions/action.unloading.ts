@@ -32,7 +32,10 @@ const findTarget = (creep: Creep) => {
   )
 }
 
-const perform = (creep: Creep, target: AnyStructure) => {
+const perform = (
+  creep: Creep,
+  target: AnyStoreStructure | StructureController
+) => {
   if (isStructureOfType(target, [STRUCTURE_CONTROLLER])) {
     const status = creep.upgradeController(target)
     if (status === OK) {
@@ -44,12 +47,22 @@ const perform = (creep: Creep, target: AnyStructure) => {
       performAction(creep)
     }
   } else {
+    if (
+      (target.store as Store<RESOURCE_ENERGY, false>).getFreeCapacity(
+        RESOURCE_ENERGY
+      ) === 0
+    ) {
+      updateAction(creep, "unloading")
+      performAction(creep)
+      return
+    }
     const transferStatus = creep.transfer(target, RESOURCE_ENERGY)
     if (transferStatus === ERR_NOT_IN_RANGE) {
       creep.moveTo(target)
     } else if (transferStatus === ERR_FULL) {
       updateAction(creep, "unloading")
       performAction(creep)
+      return
     }
   }
 }
