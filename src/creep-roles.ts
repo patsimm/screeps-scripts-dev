@@ -25,21 +25,21 @@ export const roleDefinitions: { [key in CreepRole]: CreepRoleDefinition } = {
   harvester: {
     bodyParts: [
       [WORK, CARRY, MOVE, MOVE], // 250
-      [WORK, WORK, CARRY, CARRY, MOVE, MOVE], // 400
+      [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], // 500
     ],
     run: harvester.run,
   },
   builder: {
     bodyParts: [
       [WORK, CARRY, MOVE, MOVE], // 250
-      [WORK, WORK, CARRY, CARRY, MOVE, MOVE], // 400,
+      [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], // 500,
     ],
     run: builder.run,
   },
   upgrader: {
     bodyParts: [
       [WORK, CARRY, MOVE, MOVE], // 250
-      [WORK, WORK, CARRY, CARRY, MOVE, MOVE], // 400
+      [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], // 500
     ],
     run: upgrader.run,
   },
