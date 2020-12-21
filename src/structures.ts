@@ -13,16 +13,15 @@ export const run = (room: Room) => {
     }
   }
 
-  const spawn = room.find(FIND_MY_SPAWNS)[0];
-  const sources = room.find(FIND_SOURCES);
-  sources.forEach(source => {
-    if(!_.includes(spawn.memory.pathsBuilt, source.id)) {
+  const spawn = room.find(FIND_MY_SPAWNS)[0]
+  const sources = room.find(FIND_SOURCES)
+  sources.forEach((source) => {
+    if (!_.includes(spawn.memory.pathsBuilt, source.id)) {
       const path = spawn.pos.findPathTo(source.pos, { ignoreCreeps: true })
-      path.forEach(step => {
+      _.slice(path, 0, path.length - 1).forEach((step) => {
         room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD)
-        // TODO: Road must not be built on source itself
       })
-      spawn.memory.pathsBuilt.push(source.id);
+      spawn.memory.pathsBuilt.push(source.id)
     }
   })
 }
