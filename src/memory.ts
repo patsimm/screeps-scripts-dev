@@ -20,6 +20,10 @@ export const initialize = () => {
       upgrader: room.memory.creepTargetAmounts?.upgrader || 1,
       combat: room.memory.creepTargetAmounts?.combat || 1,
     }
+    room.memory.buildOrder = room.memory.buildOrder || [
+      STRUCTURE_EXTENSION,
+      STRUCTURE_ROAD,
+    ]
   }
 
   for (const spawnName in Game.spawns) {

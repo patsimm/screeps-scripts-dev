@@ -11,6 +11,7 @@ declare global {
 
   interface RoomMemory {
     creepTargetAmounts: { [key in CreepRole]: number }
+    buildOrder: BuildableStructureConstant[]
   }
 
   interface SpawnMemory {
