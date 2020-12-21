@@ -1,11 +1,11 @@
-import { CreepRole } from "./creep-roles"
+import { CreepRole } from "../src/creep-roles"
 import { LoDashStatic } from "lodash"
-import { CreepAction } from "./creep-actions"
+import { CreepActionType } from "../src/creep-actions"
 
 declare global {
   interface CreepMemory {
     role: CreepRole
-    action: CreepAction
+    action: CreepActionType
     actionTarget: Id<any>
   }
 

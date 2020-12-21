@@ -1,10 +1,15 @@
 const { src, dest, series } = require("gulp")
-var ts = require("gulp-typescript")
-var screeps = require("gulp-screeps")
-var clean = require("gulp-clean")
+const screeps = require("gulp-screeps")
+const clean = require("gulp-clean")
+const webpackGulp = require("webpack-stream")
+const webpack = require("webpack")
+const argv = require("yargs").argv
 require("dotenv").config()
 
-const buildTask = () => src("src/*.ts").pipe(ts()).pipe(dest("dist"))
+const buildTask = () =>
+  src("src/main.ts")
+    .pipe(webpackGulp(require("./webpack.config.js"), webpack))
+    .pipe(dest("dist"))
 
 const cleanTask = () => src("dist", { allowEmpty: true }).pipe(clean())
 
@@ -12,19 +17,10 @@ const screepsTask = () =>
   src("dist/*.js").pipe(
     screeps({
       token: process.env.SCREEPS_API_KEY,
-      branch: "dev",
-    })
-  )
-
-  const screepsTaskDefault = () =>
-  src("dist/*.js").pipe(
-    screeps({
-      token: process.env.SCREEPS_API_KEY,
-      branch: "default",
+      branch: argv.branch || "dev",
     })
   )
 
 exports.default = series(cleanTask, buildTask)
 exports.screeps = series(cleanTask, buildTask, screepsTask)
-exports.screepsDefault = series(cleanTask, buildTask, screepsTaskDefault)
 exports.clean = cleanTask
