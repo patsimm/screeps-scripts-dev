@@ -21,7 +21,9 @@ const findTarget = (creep: Creep) => {
 
 const perform = (creep: Creep, target: any) => {
   const buildStatus = creep.build(target)
-  if (buildStatus == ERR_NOT_IN_RANGE) {
+  if (buildStatus == OK) {
+    return
+  } else if (buildStatus == ERR_NOT_IN_RANGE) {
     creep.moveTo(target)
   } else if (buildStatus == ERR_INVALID_TARGET) {
     updateAction(creep, "building")
@@ -32,6 +34,8 @@ const perform = (creep: Creep, target: any) => {
 const action: CreepAction = {
   findTarget,
   perform,
+  fallback: "upgrading",
+  icon: "🚧",
 }
 
 export default action

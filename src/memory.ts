@@ -21,8 +21,15 @@ export const initialize = () => {
       combat: room.memory.creepTargetAmounts?.combat || 1,
     }
     room.memory.buildOrder = room.memory.buildOrder || [
+      STRUCTURE_CONTAINER,
       STRUCTURE_EXTENSION,
       STRUCTURE_ROAD,
+    ]
+    room.memory.unloadOrder = room.memory.unloadOrder || [
+      STRUCTURE_SPAWN,
+      STRUCTURE_EXTENSION,
+      STRUCTURE_CONTAINER,
+      STRUCTURE_TOWER,
     ]
   }
 

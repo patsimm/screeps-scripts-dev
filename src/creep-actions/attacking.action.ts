@@ -16,6 +16,7 @@ const perform = (creep: Creep, target: any) => {
 const action: CreepAction = {
   findTarget,
   perform,
+  icon: "⚔️",
 }
 
 export default action
