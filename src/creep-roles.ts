@@ -71,6 +71,7 @@ export const roleDefinitions: { [key in CreepRole]: CreepRoleDefinition } = {
   walker: {
     bodyParts: [
       [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], // 300
+      [CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE], // 500,
     ],
     run: waleker.run,
   },

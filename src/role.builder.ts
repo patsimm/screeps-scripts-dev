@@ -7,7 +7,6 @@ export const run = (creep: Creep) => {
       creep.memory.action
     )
   ) {
-    console.log(creep.memory.action)
     updateAction(creep, "loading")
   }
 
