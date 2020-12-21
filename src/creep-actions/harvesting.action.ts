@@ -1,6 +1,10 @@
 import { CreepAction } from "./index"
 
 const findTarget = (creep: Creep) => {
+  if (creep.getActiveBodyparts(WORK) < 0) {
+    return undefined
+  }
+
   const source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE, {
     filter: (source) =>
       source.pos.findInRange(FIND_HOSTILE_CREEPS, 5).length === 0 &&

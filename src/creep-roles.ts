@@ -2,8 +2,14 @@ import * as harvester from "./role.harvester"
 import * as builder from "./role.builder"
 import * as upgrader from "./role.upgrader"
 import * as combat from "./role.combat"
+import * as waleker from "./role.walker"
 
-export type CreepRole = "harvester" | "builder" | "upgrader" | "combat"
+export type CreepRole =
+  | "harvester"
+  | "builder"
+  | "upgrader"
+  | "combat"
+  | "walker"
 
 export interface CreepRoleDefinition {
   bodyParts: BodyPartConstant[][]
@@ -25,7 +31,7 @@ export const roleDefinitions: { [key in CreepRole]: CreepRoleDefinition } = {
   harvester: {
     bodyParts: [
       [WORK, CARRY, MOVE, MOVE], // 250
-      [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], // 500
+      [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], // 500
     ],
     run: harvester.run,
   },
@@ -45,8 +51,27 @@ export const roleDefinitions: { [key in CreepRole]: CreepRoleDefinition } = {
   },
   combat: {
     bodyParts: [
-      [ATTACK, ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, TOUGH, TOUGH, MOVE, MOVE, MOVE, MOVE], // 490
+      [
+        ATTACK,
+        ATTACK,
+        ATTACK,
+        TOUGH,
+        TOUGH,
+        TOUGH,
+        TOUGH,
+        TOUGH,
+        MOVE,
+        MOVE,
+        MOVE,
+        MOVE,
+      ], // 490
     ],
     run: combat.run,
+  },
+  walker: {
+    bodyParts: [
+      [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], // 300
+    ],
+    run: waleker.run,
   },
 }

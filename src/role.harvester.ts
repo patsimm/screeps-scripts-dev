@@ -1,19 +1,76 @@
 import { updateAction } from "./creep-actions"
 
 export const run = (creep: Creep) => {
-  if (!_.includes(["unloading", "harvesting"], creep.memory.action)) {
-    updateAction(creep, "harvesting")
-  }
   if (
-    creep.memory.action === "unloading" &&
-    creep.store[RESOURCE_ENERGY] == 0
+    !_.includes(
+      ["harvesting", "transferring", "unloading"],
+      creep.memory.action
+    )
   ) {
     updateAction(creep, "harvesting")
   }
-  if (
-    creep.memory.action === "harvesting" &&
-    creep.store.getFreeCapacity() == 0
-  ) {
-    updateAction(creep, "unloading")
+
+  const lookResults = creep.room.lookForAtArea(
+    LOOK_CREEPS,
+    creep.pos.y - 1,
+    creep.pos.x - 1,
+    creep.pos.y + 1,
+    creep.pos.x + 1,
+    true
+  )
+  const loadingCreeps = lookResults
+    .map((result) => result.creep)
+    .filter(
+      (creep) =>
+        creep.memory.action === "loading" &&
+        creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+    )
+
+  const walkersInRoom =
+    creep.room.find(FIND_MY_CREEPS, {
+      filter: (creep) => creep.memory.role === "walker",
+    }).length > 0
+
+  if (!walkersInRoom) {
+    if (!_.includes(["harvesting", "unloading"], creep.memory.action)) {
+      updateAction(creep, "harvesting")
+    }
+
+    if (
+      _.includes(["harvesting"], creep.memory.action) &&
+      creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0 &&
+      !walkersInRoom
+    ) {
+      updateAction(creep, "unloading")
+    }
+
+    if (
+      !_.includes(["harvesting"], creep.memory.action) &&
+      creep.store.getUsedCapacity(RESOURCE_ENERGY) === 0
+    ) {
+      updateAction(creep, "harvesting")
+    }
+  } else {
+    if (
+      _.includes(["harvesting"], creep.memory.action) &&
+      creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0
+    ) {
+      updateAction(creep, "idle")
+    }
+
+    if (
+      !_.includes(["harvesting"], creep.memory.action) &&
+      creep.store.getFreeCapacity(RESOURCE_ENERGY) !== 0
+    ) {
+      updateAction(creep, "harvesting")
+    }
+
+    if (
+      !_.includes(["transferring"], creep.memory.action) &&
+      creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0 &&
+      loadingCreeps.length > 0
+    ) {
+      updateAction(creep, "transferring")
+    }
   }
 }

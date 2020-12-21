@@ -26,13 +26,22 @@ const findTarget = (creep: Creep) => {
     }
   })
 
-  return potentialStructure?.id || creep.room.controller?.id
+  return (
+    potentialStructure?.id ||
+    (creep.getActiveBodyparts(WORK) > 0 ? creep.room.controller?.id : undefined)
+  )
 }
 
 const perform = (creep: Creep, target: AnyStructure) => {
   if (isStructureOfType(target, [STRUCTURE_CONTROLLER])) {
-    if (creep.upgradeController(target) === ERR_NOT_IN_RANGE) {
+    const status = creep.upgradeController(target)
+    if (status === OK) {
+      return
+    } else if (status === ERR_NOT_IN_RANGE) {
       creep.moveTo(target)
+    } else {
+      updateAction(creep, "unloading")
+      performAction(creep)
     }
   } else {
     const transferStatus = creep.transfer(target, RESOURCE_ENERGY)

@@ -6,19 +6,21 @@ export const initialize = () => {
   })
 
   Memory.creepCounter = {
-    harvester: Memory.creepCounter?.harvester || 0,
-    builder: Memory.creepCounter?.builder || 0,
-    upgrader: Memory.creepCounter?.upgrader || 0,
-    combat: Memory.creepCounter?.combat || 0,
+    harvester: orDefault(Memory.creepCounter?.harvester, 0),
+    builder: orDefault(Memory.creepCounter?.builder, 0),
+    upgrader: orDefault(Memory.creepCounter?.upgrader, 0),
+    combat: orDefault(Memory.creepCounter?.combat, 0),
+    walker: orDefault(Memory.creepCounter?.walker, 0),
   }
 
   for (const roomName in Game.rooms) {
     const room = Game.rooms[roomName]
     room.memory.creepTargetAmounts = {
-      harvester: room.memory.creepTargetAmounts?.harvester || 2,
-      builder: room.memory.creepTargetAmounts?.builder || 3,
-      upgrader: room.memory.creepTargetAmounts?.upgrader || 1,
-      combat: room.memory.creepTargetAmounts?.combat || 1,
+      harvester: orDefault(room.memory.creepTargetAmounts?.harvester, 3),
+      builder: orDefault(room.memory.creepTargetAmounts?.builder, 3),
+      upgrader: orDefault(room.memory.creepTargetAmounts?.upgrader, 1),
+      combat: orDefault(room.memory.creepTargetAmounts?.combat, 0),
+      walker: orDefault(room.memory.creepTargetAmounts?.walker, 2),
     }
     room.memory.buildOrder = room.memory.buildOrder || [
       STRUCTURE_CONTAINER,
@@ -38,3 +40,6 @@ export const initialize = () => {
     spawn.memory.pathsBuilt = spawn.memory.pathsBuilt || []
   }
 }
+
+const orDefault = (val: number | undefined, x: number) =>
+  typeof val === "number" ? val : x

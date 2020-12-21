@@ -30,14 +30,17 @@ export const run = (spawn: StructureSpawn) => {
     (creep) => creep.memory.role
   ) as { [key in CreepRole]?: Creep[] }
 
-  _.some(["harvester", "upgrader", "builder", "combat"] as const, (role) => {
-    if (
-      (creepsByRole[role]?.length || 0) <
-      spawn.room.memory.creepTargetAmounts[role]
-    ) {
-      spawn.room.visual.text(role, spawn.pos)
-      spawnCreep(spawn, role)
-      return true
+  _.some(
+    ["harvester", "walker", "upgrader", "builder", "combat"] as const,
+    (role) => {
+      if (
+        (creepsByRole[role]?.length || 0) <
+        spawn.room.memory.creepTargetAmounts[role]
+      ) {
+        spawn.room.visual.text(role, spawn.pos)
+        spawnCreep(spawn, role)
+        return true
+      }
     }
-  })
+  )
 }
