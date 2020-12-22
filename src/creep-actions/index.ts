@@ -5,6 +5,7 @@ import unloading from "./action.unloading"
 import upgrading from "./action.upgrading"
 import loading from "./action.loading"
 import transferring from "./action.transferring"
+import repairing from "./action.repairing"
 
 const actions: CreepActions = {
   building,
@@ -14,6 +15,7 @@ const actions: CreepActions = {
   upgrading,
   attacking,
   transferring,
+  repairing,
   idle: {
     findTarget: (creep) => creep.id,
     perform: () => {},
@@ -29,6 +31,7 @@ export type CreepActionType =
   | "attacking"
   | "loading"
   | "transferring"
+  | "repairing"
   | "idle"
 
 export interface CreepAction {

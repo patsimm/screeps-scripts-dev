@@ -13,13 +13,23 @@ const buildTask = () =>
 
 const cleanTask = () => src("dist", { allowEmpty: true }).pipe(clean())
 
-const screepsTask = () =>
-  src("dist/*.js").pipe(
-    screeps({
-      token: process.env.SCREEPS_API_KEY,
+const screepsConfig = argv.localhost
+  ? {
+      email: "patsimm",
+      password: "test123",
+      branch: "default",
+      host: "localhost",
+      port: 21025,
+    }
+  : {
+      token: argv.ptr
+        ? process.env.SCREEPS_API_KEY_PTR
+        : process.env.SCREEPS_API_KEY,
       branch: argv.branch || "dev",
-    })
-  )
+      path: argv.ptr ? "/ptr" : undefined,
+    }
+
+const screepsTask = () => src("dist/*.js").pipe(screeps(screepsConfig))
 
 exports.default = series(cleanTask, buildTask)
 exports.screeps = series(cleanTask, buildTask, screepsTask)

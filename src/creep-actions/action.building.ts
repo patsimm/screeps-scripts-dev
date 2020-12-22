@@ -34,7 +34,7 @@ const perform = (creep: Creep, target: any) => {
 const action: CreepAction = {
   findTarget,
   perform,
-  fallback: "upgrading",
+  fallback: "repairing",
   icon: "🚧",
 }
 

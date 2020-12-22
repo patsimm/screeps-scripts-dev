@@ -4,7 +4,14 @@ import { updateAction } from "../creep-actions"
 const run = (creep: Creep) => {
   if (
     !_.includes(
-      ["building", "harvesting", "loading", "unloading", "upgrading"],
+      [
+        "building",
+        "harvesting",
+        "loading",
+        "unloading",
+        "upgrading",
+        "repairing",
+      ],
       creep.memory.action
     )
   ) {
@@ -15,7 +22,10 @@ const run = (creep: Creep) => {
   const isEnergyEmpty = creep.store[RESOURCE_ENERGY] == 0
 
   if (
-    _.includes(["building", "unloading", "upgrading"], creep.memory.action) &&
+    _.includes(
+      ["building", "unloading", "upgrading", "repairing"],
+      creep.memory.action
+    ) &&
     isEnergyEmpty
   ) {
     updateAction(creep, "loading")
