@@ -13,6 +13,7 @@ const spawnCreep = (spawn: StructureSpawn, role: CreepRole) => {
           action: "idle",
           actionTarget: spawn.id,
           actionCounter: 0,
+          triedTargets: [],
         },
       }
     )

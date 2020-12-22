@@ -2,7 +2,7 @@ import { CreepAction, rerunAction } from "./actions"
 
 const findTarget = (creep: Creep) => {
   const repairableStructures = creep.room.find(FIND_STRUCTURES, {
-    filter: (structure) => structure.hits < structure.hitsMax,
+    filter: (structure) => structure.hits / structure.hitsMax < 0.8,
   })
 
   return _(repairableStructures)

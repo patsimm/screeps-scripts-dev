@@ -17,7 +17,7 @@ const screepsConfig = argv.localhost
   ? {
       email: "patsimm",
       password: "test123",
-      branch: "default",
+      branch: argv.branch || "dev",
       host: "localhost",
       port: 21025,
     }

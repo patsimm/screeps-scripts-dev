@@ -45,6 +45,7 @@ export const initialize = () => {
   for (const creepName in Game.creeps) {
     const creep = Game.creeps[creepName]
     creep.memory.actionCounter = 0
+    creep.memory.triedTargets = []
   }
 }
 

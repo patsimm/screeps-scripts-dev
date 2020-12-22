@@ -8,6 +8,7 @@ declare global {
     action: CreepActionType
     actionTarget: Id<any>
     actionCounter: number
+    triedTargets: Array<Id<any>>
   }
 
   interface RoomMemory {

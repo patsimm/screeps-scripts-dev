@@ -55,6 +55,7 @@ export const performAction = (creep: Creep) => {
         ", tried to perform " +
         creep.memory.action
     )
+    console.log(creep.memory.triedTargets)
     updateAction(creep, "idle")
     return
   }
@@ -84,6 +85,7 @@ export const updateAction = (
 
   creep.memory.action = newActionType
   creep.memory.actionTarget = actionTarget
+  creep.memory.triedTargets.push(actionTarget)
   creep.say(action.icon)
 }
 

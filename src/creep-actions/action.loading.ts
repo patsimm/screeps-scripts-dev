@@ -21,25 +21,29 @@ const findTarget = (creep: Creep) => {
       filter: (creep) => creep.memory.role === "walker",
     }).length > 0
 
-  if (walkersInRoom) {
-    targets.push(
-      ...creep.room.find(FIND_MY_CREEPS, {
-        filter: (potentialHarvester) =>
-          potentialHarvester.memory.role === "harvester" &&
-          potentialHarvester.store.getUsedCapacity(RESOURCE_ENERGY) > 0,
-      })
+  const harvesters = creep.room.find(FIND_MY_CREEPS, {
+    filter: (potentialHarvester) =>
+      potentialHarvester.memory.role === "harvester",
+  })
+
+  if (
+    walkersInRoom &&
+    harvesters.some(
+      (harvester) => harvester.store.getUsedCapacity(RESOURCE_ENERGY) > 0
     )
+  ) {
+    targets.push(...harvesters)
   }
 
   return _(targets)
+    .filter((target) => !_.includes(creep.memory.triedTargets, target.id))
     .sortBy((target) => {
       const distance = creep.pos.getRangeTo(target.pos)
       const energy = (target.store as Store<
         RESOURCE_ENERGY,
         false
       >).getUsedCapacity(RESOURCE_ENERGY)
-      const value = energy - 2 * distance + _.random(50)
-      return value
+      return energy - 2 * distance + _.random(50)
     })
     .last()?.id
 }
