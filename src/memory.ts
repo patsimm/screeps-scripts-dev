@@ -41,6 +41,11 @@ export const initialize = () => {
     const spawn = Game.spawns[spawnName]
     spawn.memory.pathsBuilt = spawn.memory.pathsBuilt || []
   }
+
+  for (const creepName in Game.creeps) {
+    const creep = Game.creeps[creepName]
+    creep.memory.actionCounter = 0
+  }
 }
 
 const orDefault = (val: number | undefined, x: number) =>

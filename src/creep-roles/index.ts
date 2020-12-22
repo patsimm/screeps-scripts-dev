@@ -3,6 +3,7 @@ import builder from "./role.builder"
 import upgrader from "./role.upgrader"
 import combat from "./role.combat"
 import walker from "./role.walker"
+import { performAction } from "../creep-actions"
 
 /*
  * MOVE           50
@@ -33,4 +34,9 @@ export const roleDefinitions: { [key in CreepRole]: CreepRoleDefinition } = {
   upgrader,
   combat,
   walker,
+}
+
+export const run = (creep: Creep) => {
+  roleDefinitions[creep.memory.role].run(creep)
+  performAction(creep)
 }

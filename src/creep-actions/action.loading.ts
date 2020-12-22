@@ -1,5 +1,5 @@
 import { isStructureOfType } from "../helpers"
-import { CreepAction, performAction, updateAction } from "./index"
+import { CreepAction, rerunAction } from "./actions"
 
 const findTarget = (creep: Creep) => {
   let targets: Array<Creep | AnyStoreStructure> = []
@@ -25,19 +25,21 @@ const findTarget = (creep: Creep) => {
     targets.push(
       ...creep.room.find(FIND_MY_CREEPS, {
         filter: (potentialHarvester) =>
-          potentialHarvester.memory.role === "harvester",
+          potentialHarvester.memory.role === "harvester" &&
+          potentialHarvester.store.getUsedCapacity(RESOURCE_ENERGY) > 0,
       })
     )
   }
 
   return _(targets)
     .sortBy((target) => {
-      const distance = creep.pos.getRangeTo(target.pos) + 1
+      const distance = creep.pos.getRangeTo(target.pos)
       const energy = (target.store as Store<
         RESOURCE_ENERGY,
         false
       >).getUsedCapacity(RESOURCE_ENERGY)
-      return _.floor(energy / (distance * 0.5)) + _.random(10)
+      const value = energy - 2 * distance + _.random(50)
+      return value
     })
     .last()?.id
 }
@@ -45,11 +47,8 @@ const findTarget = (creep: Creep) => {
 const perform = (creep: Creep, target: AnyStructure | Creep) => {
   if (target instanceof Creep) {
     if (target.store.getUsedCapacity(RESOURCE_ENERGY) === 0) {
-      updateAction(creep, "idle")
-      performAction(creep)
-      return
+      return rerunAction(creep)
     }
-
     creep.moveTo(target)
   } else if (target instanceof Structure) {
     const result = creep.withdraw(target, RESOURCE_ENERGY)
@@ -58,8 +57,7 @@ const perform = (creep: Creep, target: AnyStructure | Creep) => {
     } else if (result === ERR_NOT_IN_RANGE) {
       creep.moveTo(target)
     } else {
-      updateAction(creep, "loading")
-      performAction(creep)
+      return rerunAction(creep)
     }
   }
 }

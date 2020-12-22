@@ -1,4 +1,4 @@
-import { CreepAction, performAction, updateAction } from "./index"
+import { CreepAction, rerunAction } from "./actions"
 
 const findTarget = (creep: Creep) => {
   const constructionSites = creep.room.find(FIND_MY_CONSTRUCTION_SITES)
@@ -26,8 +26,7 @@ const perform = (creep: Creep, target: any) => {
   } else if (buildStatus == ERR_NOT_IN_RANGE) {
     creep.moveTo(target)
   } else if (buildStatus == ERR_INVALID_TARGET) {
-    updateAction(creep, "building")
-    performAction(creep)
+    return rerunAction(creep)
   }
 }
 

@@ -7,6 +7,7 @@ declare global {
     role: CreepRole
     action: CreepActionType
     actionTarget: Id<any>
+    actionCounter: number
   }
 
   interface RoomMemory {

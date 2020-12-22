@@ -1,4 +1,4 @@
-import { CreepAction, performAction, updateAction } from "./index"
+import { CreepAction, rerunAction } from "./actions"
 
 const findTarget = (creep: Creep) => {
   const lookResults = creep.room.lookForAtArea(
@@ -22,8 +22,7 @@ const findTarget = (creep: Creep) => {
 const perform = (creep: Creep, target: Creep) => {
   const status = creep.transfer(target, RESOURCE_ENERGY)
   if (status !== OK) {
-    updateAction(creep, "idle")
-    performAction(creep)
+    return rerunAction(creep)
   }
 }
 

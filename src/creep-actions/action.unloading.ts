@@ -1,5 +1,5 @@
 import { isStructureOfType } from "../helpers"
-import { CreepAction, performAction, updateAction } from "./index"
+import { CreepAction, rerunAction } from "./actions"
 
 const findTarget = (creep: Creep) => {
   const targets = creep.room.find(FIND_STRUCTURES, {
@@ -43,8 +43,7 @@ const perform = (
     } else if (status === ERR_NOT_IN_RANGE) {
       creep.moveTo(target)
     } else {
-      updateAction(creep, "unloading")
-      performAction(creep)
+      return rerunAction(creep)
     }
   } else {
     if (
@@ -52,17 +51,13 @@ const perform = (
         RESOURCE_ENERGY
       ) === 0
     ) {
-      updateAction(creep, "unloading")
-      performAction(creep)
-      return
+      return rerunAction(creep)
     }
     const transferStatus = creep.transfer(target, RESOURCE_ENERGY)
     if (transferStatus === ERR_NOT_IN_RANGE) {
       creep.moveTo(target)
     } else if (transferStatus === ERR_FULL) {
-      updateAction(creep, "unloading")
-      performAction(creep)
-      return
+      return rerunAction(creep)
     }
   }
 }

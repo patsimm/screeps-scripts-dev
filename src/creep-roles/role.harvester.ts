@@ -1,5 +1,5 @@
-import { CreepRoleDefinition } from "."
-import { updateAction } from "../creep-actions"
+import { CreepRoleDefinition } from "./index"
+import { updateAction } from "../creep-actions/actions"
 
 const run = (creep: Creep) => {
   if (
@@ -68,7 +68,12 @@ const run = (creep: Creep) => {
 
     if (
       !_.includes(["transferring"], creep.memory.action) &&
-      creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0 &&
+      (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0 ||
+        loadingCreeps.some(
+          (loadingCreep) =>
+            loadingCreep.store.getFreeCapacity(RESOURCE_ENERGY) <
+            creep.store.getUsedCapacity(RESOURCE_ENERGY)
+        )) &&
       loadingCreeps.length > 0
     ) {
       updateAction(creep, "transferring")

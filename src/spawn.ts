@@ -8,7 +8,12 @@ const spawnCreep = (spawn: StructureSpawn, role: CreepRole) => {
       bodyParts,
       role + Memory.creepCounter[role],
       {
-        memory: { role: role, action: "idle", actionTarget: spawn.id },
+        memory: {
+          role: role,
+          action: "idle",
+          actionTarget: spawn.id,
+          actionCounter: 0,
+        },
       }
     )
     if (status === OK) {

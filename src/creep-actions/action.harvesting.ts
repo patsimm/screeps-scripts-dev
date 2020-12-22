@@ -1,4 +1,4 @@
-import { CreepAction, performAction, updateAction } from "./index"
+import { CreepAction, rerunAction } from "./actions"
 
 const findTarget = (creep: Creep) => {
   if (creep.getActiveBodyparts(WORK) < 0) {
@@ -16,8 +16,7 @@ const findTarget = (creep: Creep) => {
 const perform = (creep: Creep, target: any) => {
   if (creep.harvest(target) === ERR_NOT_IN_RANGE) {
     if (creep.moveTo(target) === ERR_NO_PATH) {
-      updateAction(creep, "harvesting")
-      performAction(creep)
+      return rerunAction(creep)
     }
   }
 }

@@ -1,4 +1,4 @@
-import { CreepAction } from "./index"
+import { CreepAction } from "./actions"
 
 export const findTarget = (creep: Creep) => {
   if (creep.getActiveBodyparts(WORK) < 0) {

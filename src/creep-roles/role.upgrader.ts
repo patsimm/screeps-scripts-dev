@@ -1,11 +1,11 @@
-import { CreepRoleDefinition } from "."
+import { CreepRoleDefinition } from "./index"
 import { updateAction } from "../creep-actions"
 
 const run = (creep: Creep) => {
   if (
     !_.includes(["upgrading", "harvesting", "loading"], creep.memory.action)
   ) {
-    updateAction(creep, "loading")
+    updateAction(creep, "upgrading")
   }
   if (
     creep.memory.action === "upgrading" &&

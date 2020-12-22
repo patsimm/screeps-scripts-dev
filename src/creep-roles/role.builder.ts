@@ -1,4 +1,4 @@
-import { CreepRoleDefinition } from "."
+import { CreepRoleDefinition } from "./index"
 import { updateAction } from "../creep-actions"
 
 const run = (creep: Creep) => {
@@ -15,7 +15,7 @@ const run = (creep: Creep) => {
       creep.memory.action
     )
   ) {
-    updateAction(creep, "loading")
+    updateAction(creep, "building")
   }
 
   const hasEnergyCapacity = creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0

@@ -1,4 +1,4 @@
-import { CreepAction } from "./index"
+import { CreepAction } from "./actions"
 
 const findTarget = (creep: Creep) => {
   const targets = creep.room.find(FIND_HOSTILE_CREEPS, {
