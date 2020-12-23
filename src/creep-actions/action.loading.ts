@@ -29,7 +29,7 @@ const findTarget = (creep: Creep) => {
   if (
     walkersInRoom &&
     harvesters.some(
-      (harvester) => harvester.store.getUsedCapacity(RESOURCE_ENERGY) >= 5
+      (harvester) => harvester.store.getUsedCapacity(RESOURCE_ENERGY) > 0
     )
   ) {
     targets.push(

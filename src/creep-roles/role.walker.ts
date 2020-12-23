@@ -7,13 +7,13 @@ export const run = (creep: Creep) => {
   }
   if (
     creep.memory.action.type === "unloading" &&
-    creep.store[RESOURCE_ENERGY] == 0
+    creep.store[RESOURCE_ENERGY] === 0
   ) {
     updateAction(creep, "loading", {}, ["harvesting"])
   }
   if (
     _.includes(["loading"], creep.memory.action.type) &&
-    creep.store.getFreeCapacity() == 0
+    creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0
   ) {
     updateAction(creep, "unloading", {})
   }
