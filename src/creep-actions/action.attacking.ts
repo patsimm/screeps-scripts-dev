@@ -13,7 +13,8 @@ const perform = (creep: Creep, target: any) => {
   }
 }
 
-const action: CreepAction = {
+const action: CreepAction<"attacking"> = {
+  type: "attacking",
   findTarget,
   perform,
   icon: "⚔️",

@@ -34,8 +34,13 @@ const perform = (creep: Creep, target: any) => {
       .map((result) => result.structure)
       .filter(
         (structure): structure is ConcreteStructure<STRUCTURE_CONTAINER> =>
-          isStructureOfType(structure, [STRUCTURE_CONTAINER])
+          isStructureOfType(structure, [STRUCTURE_CONTAINER]) &&
+          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
       )[0]
+
+    appendingContainer.room.visual.circle(appendingContainer.pos, {
+      fill: "#00ff00",
+    })
 
     if (appendingContainer) {
       creep.transfer(appendingContainer, RESOURCE_ENERGY)
@@ -46,7 +51,8 @@ const perform = (creep: Creep, target: any) => {
   }
 }
 
-const action: CreepAction = {
+const action: CreepAction<"harvesting"> = {
+  type: "harvesting",
   findTarget,
   perform,
   icon: "⛏",

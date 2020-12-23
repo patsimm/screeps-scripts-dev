@@ -3,7 +3,7 @@ import { updateAction } from "../creep-actions/actions"
 
 const run = (creep: Creep) => {
   if (!_.includes(["attacking"], creep.memory.action.type)) {
-    updateAction(creep, "attacking")
+    updateAction(creep, "attacking", {})
   }
 }
 

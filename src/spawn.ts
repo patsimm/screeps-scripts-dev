@@ -14,6 +14,8 @@ const spawnCreep = (spawn: StructureSpawn, role: CreepRole) => {
             target: spawn.id,
             counter: 0,
             triedTargets: [],
+            opts: {},
+            fallback: [],
           },
           role: roleDefinitions[role].initialMemory,
         },

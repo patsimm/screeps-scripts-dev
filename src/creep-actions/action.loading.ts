@@ -77,10 +77,11 @@ const perform = (creep: Creep, target: AnyStructure | Creep) => {
   }
 }
 
-const action: CreepAction = {
+const action: CreepAction<"loading"> = {
+  type: "loading",
   findTarget,
   perform,
-  fallback: "harvesting",
+  // fallback: "harvesting",
   icon: "📥",
 }
 

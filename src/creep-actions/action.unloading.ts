@@ -62,7 +62,8 @@ const perform = (
   }
 }
 
-const action: CreepAction = {
+const action: CreepAction<"unloading"> = {
+  type: "unloading",
   findTarget,
   perform,
   icon: "📤",

@@ -7,7 +7,22 @@ import loading from "./action.loading"
 import transferring from "./action.transferring"
 import repairing from "./action.repairing"
 
-const actions: CreepActions = {
+export type CreepActionFunction<Opts extends {}> = (
+  creep: Creep,
+  target: any,
+  options: Opts
+) => void
+
+export type CreepActionTargeter = (creep: Creep) => Id<any> | undefined
+
+export interface CreepAction<T, Opts extends {} = {}> {
+  type: T
+  findTarget: CreepActionTargeter
+  perform: CreepActionFunction<Opts>
+  icon: string
+}
+
+const actions = {
   building,
   harvesting,
   unloading,
@@ -17,42 +32,54 @@ const actions: CreepActions = {
   transferring,
   repairing,
   idle: {
-    findTarget: (creep) => creep.id,
+    type: "idle",
+    findTarget: (creep: Creep) => creep.id,
     perform: () => {},
     icon: "😴",
-  },
+  } as CreepAction<"idle", {}>,
 }
 
-export type CreepActionType =
-  | "harvesting"
-  | "building"
-  | "upgrading"
-  | "unloading"
-  | "attacking"
-  | "loading"
-  | "transferring"
-  | "repairing"
-  | "idle"
+export type AnyCreepAction = typeof actions[keyof typeof actions] extends infer A
+  ? A extends CreepAction<any, any>
+    ? A
+    : never
+  : never
 
-export interface CreepAction {
-  findTarget: CreepActionTargeter
-  perform: CreepActionFunction
-  fallback?: CreepActionType
-  icon: string
-}
+export type CreepActionType = AnyCreepAction extends CreepAction<infer T, any>
+  ? T
+  : never
 
-export interface CreepActionMemory {
-  type: CreepActionType
+export type ConcreteCreepAction<T extends CreepActionType> = Extract<
+  AnyCreepAction,
+  CreepAction<T, any>
+>
+
+export type CreepActionOpts = typeof actions[keyof typeof actions] extends infer O
+  ? O extends CreepAction<any, infer T>
+    ? T
+    : never
+  : never
+
+export type ConcreteCreepActionOpts<
+  T extends CreepActionType
+> = ConcreteCreepAction<T> extends CreepAction<any, infer Opts> ? Opts : never
+
+export type ConcreteCreepActionMemory<
+  T extends CreepActionType = CreepActionType
+> = {
+  type: T
   target: Id<any>
   counter: number
   triedTargets: Array<Id<any>>
+  opts: ConcreteCreepActionOpts<T>
+  fallback: CreepActionType[]
 }
 
-export type CreepActionFunction = (creep: Creep, target: any) => void
-
-export type CreepActionTargeter = (creep: Creep) => Id<any> | undefined
-
-export type CreepActions = { [key in CreepActionType]: CreepAction }
+export type CreepActionMemory = CreepActionType extends infer C
+  ? C extends CreepActionType
+    ? ConcreteCreepActionMemory<C>
+    : never
+  : never
 
 export const performAction = (creep: Creep) => {
   if (creep.memory.action.counter++ > 10) {
@@ -63,40 +90,72 @@ export const performAction = (creep: Creep) => {
         creep.memory.action.type
     )
     console.log(creep.memory.action.triedTargets)
-    updateAction(creep, "idle")
+    updateAction(creep, "idle", {})
     return
   }
 
   const target = Game.getObjectById(creep.memory.action.target)
 
   if (!target) {
-    updateAction(creep, creep.memory.action.type)
+    _updateAction(
+      creep,
+      creep.memory.action.type,
+      creep.memory.action.opts,
+      creep.memory.action.fallback
+    )
     performAction(creep)
     return
   }
 
-  actions[creep.memory.action.type].perform(creep, target)
+  const recordActions: Record<CreepActionType, CreepAction<unknown>> = actions
+
+  recordActions[creep.memory.action.type].perform(
+    creep,
+    target,
+    creep.memory.action.opts
+  )
 }
 
-export const updateAction = (
+const _updateAction = (
   creep: Creep,
-  newActionType: CreepActionType
+  newActionType: CreepActionType,
+  opts: CreepActionOpts,
+  fallback: CreepActionType[]
 ): void => {
   const action = actions[newActionType]
   const actionTarget = action.findTarget(creep)
   if (!actionTarget) {
-    return action.fallback
-      ? updateAction(creep, action.fallback)
-      : updateAction(creep, "idle")
+    return fallback && _.first(fallback)
+      ? _updateAction(
+          creep,
+          _.first(fallback) as CreepActionType,
+          opts,
+          _.rest(fallback)
+        )
+      : updateAction(creep, "idle", {})
   }
 
   creep.memory.action.type = newActionType
   creep.memory.action.target = actionTarget
   creep.memory.action.triedTargets.push(actionTarget)
+  creep.memory.action.fallback = fallback
+  creep.memory.action.opts = opts
   creep.say(action.icon)
 }
 
+export const updateAction = <T extends CreepActionType>(
+  creep: Creep,
+  newActionType: T,
+  opts: ConcreteCreepActionOpts<T>,
+  fallback?: CreepActionType[]
+): void => _updateAction(creep, newActionType, opts, fallback || [])
+
 export const rerunAction = (creep: Creep) => {
-  updateAction(creep, creep.memory.action.type)
+  _updateAction(
+    creep,
+    creep.memory.action.type,
+    creep.memory.action.opts,
+    creep.memory.action.fallback
+  )
   performAction(creep)
 }

@@ -15,7 +15,7 @@ const run = (creep: Creep) => {
       creep.memory.action.type
     )
   ) {
-    updateAction(creep, "building")
+    updateAction(creep, "building", {}, ["repairing", "upgrading"])
   }
 
   const hasEnergyCapacity = creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
@@ -28,13 +28,13 @@ const run = (creep: Creep) => {
     ) &&
     isEnergyEmpty
   ) {
-    updateAction(creep, "loading")
+    updateAction(creep, "loading", {}, ["harvesting"])
   }
   if (
     _.includes(["loading", "harvesting"], creep.memory.action.type) &&
     !hasEnergyCapacity
   ) {
-    updateAction(creep, "building")
+    updateAction(creep, "building", {}, ["repairing", "upgrading"])
   }
 }
 

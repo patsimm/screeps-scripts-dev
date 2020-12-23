@@ -3,19 +3,19 @@ import { updateAction } from "../creep-actions"
 
 export const run = (creep: Creep) => {
   if (!_.includes(["unloading", "loading"], creep.memory.action.type)) {
-    updateAction(creep, "unloading")
+    updateAction(creep, "unloading", {})
   }
   if (
     creep.memory.action.type === "unloading" &&
     creep.store[RESOURCE_ENERGY] == 0
   ) {
-    updateAction(creep, "loading")
+    updateAction(creep, "loading", {}, ["harvesting"])
   }
   if (
     _.includes(["loading"], creep.memory.action.type) &&
     creep.store.getFreeCapacity() == 0
   ) {
-    updateAction(creep, "unloading")
+    updateAction(creep, "unloading", {})
   }
 
   if (creep.memory.action.type === "idle") {

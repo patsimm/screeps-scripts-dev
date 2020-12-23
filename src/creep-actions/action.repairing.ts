@@ -29,10 +29,11 @@ const perform = (creep: Creep, target: AnyStructure) => {
   }
 }
 
-const action: CreepAction = {
+const action: CreepAction<"repairing"> = {
+  type: "repairing",
   findTarget,
   perform,
-  fallback: "upgrading",
+  // fallback: "upgrading",
   icon: "👨‍🔧",
 }
 

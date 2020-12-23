@@ -16,7 +16,8 @@ export const perform = (creep: Creep, target: any) => {
   }
 }
 
-const action: CreepAction = {
+const action: CreepAction<"upgrading"> = {
+  type: "upgrading",
   findTarget,
   perform,
   icon: "⏫",

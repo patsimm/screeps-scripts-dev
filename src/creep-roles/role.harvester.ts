@@ -8,7 +8,7 @@ const run = (creep: Creep) => {
       creep.memory.action.type
     )
   ) {
-    updateAction(creep, "harvesting")
+    updateAction(creep, "harvesting", {})
   }
 
   const lookResults = creep.room.lookForAtArea(
@@ -34,7 +34,7 @@ const run = (creep: Creep) => {
 
   if (!walkersInRoom) {
     if (!_.includes(["harvesting", "unloading"], creep.memory.action.type)) {
-      updateAction(creep, "harvesting")
+      updateAction(creep, "harvesting", {})
     }
 
     if (
@@ -42,28 +42,28 @@ const run = (creep: Creep) => {
       creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0 &&
       !walkersInRoom
     ) {
-      updateAction(creep, "unloading")
+      updateAction(creep, "unloading", {})
     }
 
     if (
       !_.includes(["harvesting"], creep.memory.action.type) &&
       creep.store.getUsedCapacity(RESOURCE_ENERGY) === 0
     ) {
-      updateAction(creep, "harvesting")
+      updateAction(creep, "harvesting", {})
     }
   } else {
     if (
       _.includes(["harvesting"], creep.memory.action.type) &&
       creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0
     ) {
-      updateAction(creep, "idle")
+      updateAction(creep, "idle", {})
     }
 
     if (
       !_.includes(["harvesting"], creep.memory.action.type) &&
       creep.store.getFreeCapacity(RESOURCE_ENERGY) !== 0
     ) {
-      updateAction(creep, "harvesting")
+      updateAction(creep, "harvesting", {})
     }
 
     if (
@@ -76,7 +76,7 @@ const run = (creep: Creep) => {
         )) &&
       loadingCreeps.length > 0
     ) {
-      updateAction(creep, "transferring")
+      updateAction(creep, "transferring", {})
     }
   }
 }
