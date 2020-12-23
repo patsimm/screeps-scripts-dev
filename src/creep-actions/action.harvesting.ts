@@ -38,11 +38,10 @@ const perform = (creep: Creep, target: any) => {
           structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
       )[0]
 
-    appendingContainer.room.visual.circle(appendingContainer.pos, {
-      fill: "#00ff00",
-    })
-
     if (appendingContainer) {
+      appendingContainer.room.visual.circle(appendingContainer.pos, {
+        fill: "#00ff00",
+      })
       creep.transfer(appendingContainer, RESOURCE_ENERGY)
       creep.memory.role.filling = appendingContainer.id
     } else {
