@@ -4,7 +4,7 @@ import { CreepAction, rerunAction } from "./actions"
 const findTarget = (creep: Creep) => {
   let targets: Array<Creep | AnyStoreStructure> = []
 
-  if (creep.memory.role !== "walker") {
+  if (creep.memory.role.name !== "walker") {
     targets.push(
       ...(creep.room.find(FIND_STRUCTURES, {
         filter: (structure) =>
@@ -18,25 +18,36 @@ const findTarget = (creep: Creep) => {
 
   const walkersInRoom =
     creep.room.find(FIND_MY_CREEPS, {
-      filter: (creep) => creep.memory.role === "walker",
+      filter: (creep) => creep.memory.role.name === "walker",
     }).length > 0
 
   const harvesters = creep.room.find(FIND_MY_CREEPS, {
     filter: (potentialHarvester) =>
-      potentialHarvester.memory.role === "harvester",
+      potentialHarvester.memory.role.name === "harvester",
   })
 
   if (
     walkersInRoom &&
     harvesters.some(
-      (harvester) => harvester.store.getUsedCapacity(RESOURCE_ENERGY) > 0
+      (harvester) => harvester.store.getUsedCapacity(RESOURCE_ENERGY) >= 5
     )
   ) {
-    targets.push(...harvesters)
+    targets.push(
+      ...harvesters.map(
+        (harvester) =>
+          (harvester.memory.role.name === "harvester" &&
+          harvester.memory.role.filling
+            ? Game.getObjectById(harvester.memory.role.filling)
+            : undefined) || harvester
+      )
+    )
   }
 
   return _(targets)
-    .filter((target) => !_.includes(creep.memory.triedTargets, target.id))
+    .uniq((target) => target.id)
+    .filter(
+      (target) => !_.includes(creep.memory.action.triedTargets, target.id)
+    )
     .sortBy((target) => {
       const distance = creep.pos.getRangeTo(target.pos)
       const energy = (target.store as Store<
@@ -50,7 +61,7 @@ const findTarget = (creep: Creep) => {
 
 const perform = (creep: Creep, target: AnyStructure | Creep) => {
   if (target instanceof Creep) {
-    if (target.store.getUsedCapacity(RESOURCE_ENERGY) === 0) {
+    if (target.store.getUsedCapacity(RESOURCE_ENERGY) < 5) {
       return rerunAction(creep)
     }
     creep.moveTo(target)

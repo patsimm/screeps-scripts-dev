@@ -1,7 +1,7 @@
 export function isStructureOfType<T extends StructureConstant>(
   structure: Structure<any>,
   types: Array<T>
-): structure is Structure<T> {
+): structure is ConcreteStructure<T> {
   return _.includes(types, structure.structureType)
 }
 

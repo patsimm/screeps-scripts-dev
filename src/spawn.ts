@@ -9,11 +9,13 @@ const spawnCreep = (spawn: StructureSpawn, role: CreepRole) => {
       role + Memory.creepCounter[role],
       {
         memory: {
-          role: role,
-          action: "idle",
-          actionTarget: spawn.id,
-          actionCounter: 0,
-          triedTargets: [],
+          action: {
+            type: "idle",
+            target: spawn.id,
+            counter: 0,
+            triedTargets: [],
+          },
+          role: roleDefinitions[role].initialMemory,
         },
       }
     )
@@ -33,7 +35,7 @@ const spawnCreep = (spawn: StructureSpawn, role: CreepRole) => {
 export const run = (spawn: StructureSpawn) => {
   const creepsByRole = _.groupBy(
     spawn.room.find(FIND_MY_CREEPS),
-    (creep) => creep.memory.role
+    (creep) => creep.memory.role.name
   ) as { [key in CreepRole]?: Creep[] }
 
   _.some(

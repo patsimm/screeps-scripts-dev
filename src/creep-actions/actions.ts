@@ -41,6 +41,13 @@ export interface CreepAction {
   icon: string
 }
 
+export interface CreepActionMemory {
+  type: CreepActionType
+  target: Id<any>
+  counter: number
+  triedTargets: Array<Id<any>>
+}
+
 export type CreepActionFunction = (creep: Creep, target: any) => void
 
 export type CreepActionTargeter = (creep: Creep) => Id<any> | undefined
@@ -48,27 +55,27 @@ export type CreepActionTargeter = (creep: Creep) => Id<any> | undefined
 export type CreepActions = { [key in CreepActionType]: CreepAction }
 
 export const performAction = (creep: Creep) => {
-  if (creep.memory.actionCounter++ > 10) {
+  if (creep.memory.action.counter++ > 10) {
     console.log(
       "action counter too large from creep " +
         creep.name +
         ", tried to perform " +
-        creep.memory.action
+        creep.memory.action.type
     )
-    console.log(creep.memory.triedTargets)
+    console.log(creep.memory.action.triedTargets)
     updateAction(creep, "idle")
     return
   }
 
-  const target = Game.getObjectById(creep.memory.actionTarget)
+  const target = Game.getObjectById(creep.memory.action.target)
 
   if (!target) {
-    updateAction(creep, creep.memory.action)
+    updateAction(creep, creep.memory.action.type)
     performAction(creep)
     return
   }
 
-  actions[creep.memory.action].perform(creep, target)
+  actions[creep.memory.action.type].perform(creep, target)
 }
 
 export const updateAction = (
@@ -83,13 +90,13 @@ export const updateAction = (
       : updateAction(creep, "idle")
   }
 
-  creep.memory.action = newActionType
-  creep.memory.actionTarget = actionTarget
-  creep.memory.triedTargets.push(actionTarget)
+  creep.memory.action.type = newActionType
+  creep.memory.action.target = actionTarget
+  creep.memory.action.triedTargets.push(actionTarget)
   creep.say(action.icon)
 }
 
 export const rerunAction = (creep: Creep) => {
-  updateAction(creep, creep.memory.action)
+  updateAction(creep, creep.memory.action.type)
   performAction(creep)
 }

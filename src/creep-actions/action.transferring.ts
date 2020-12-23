@@ -13,7 +13,7 @@ const findTarget = (creep: Creep) => {
     .map((result) => result.creep)
     .filter(
       (creep) =>
-        creep.memory.action === "loading" &&
+        creep.memory.action.type === "loading" &&
         creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0
     )
   return loadingCreeps[0]?.id

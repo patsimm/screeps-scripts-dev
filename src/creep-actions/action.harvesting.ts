@@ -1,3 +1,4 @@
+import { isStructureOfType } from "../helpers"
 import { CreepAction, rerunAction } from "./actions"
 
 const findTarget = (creep: Creep) => {
@@ -17,6 +18,30 @@ const perform = (creep: Creep, target: any) => {
   if (creep.harvest(target) === ERR_NOT_IN_RANGE) {
     if (creep.moveTo(target) === ERR_NO_PATH) {
       return rerunAction(creep)
+    }
+  }
+
+  if (creep.memory.role.name === "harvester") {
+    const appendingContainer = creep.room
+      .lookForAtArea(
+        LOOK_STRUCTURES,
+        creep.pos.y - 1,
+        creep.pos.x - 1,
+        creep.pos.y + 1,
+        creep.pos.x + 1,
+        true
+      )
+      .map((result) => result.structure)
+      .filter(
+        (structure): structure is ConcreteStructure<STRUCTURE_CONTAINER> =>
+          isStructureOfType(structure, [STRUCTURE_CONTAINER])
+      )[0]
+
+    if (appendingContainer) {
+      creep.transfer(appendingContainer, RESOURCE_ENERGY)
+      creep.memory.role.filling = appendingContainer.id
+    } else {
+      creep.memory.role.filling = undefined
     }
   }
 }

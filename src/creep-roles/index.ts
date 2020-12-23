@@ -16,27 +16,32 @@ import { performAction } from "../creep-actions"
  * TOUGH          10
  */
 
-export type CreepRole =
-  | "harvester"
-  | "builder"
-  | "upgrader"
-  | "combat"
-  | "walker"
-
-export interface CreepRoleDefinition {
+export type CreepRoleDefinition<Name, Memory extends { name: Name }> = {
+  name: Name
   bodyParts: BodyPartConstant[][]
   run: (creep: Creep) => void
+  initialMemory: Memory
 }
 
-export const roleDefinitions: { [key in CreepRole]: CreepRoleDefinition } = {
-  harvester,
-  builder,
-  upgrader,
-  combat,
-  walker,
-}
+export const roleDefinitions = { harvester, builder, upgrader, combat, walker }
+
+export type AnyCreepRoleDefinition = typeof roleDefinitions[keyof typeof roleDefinitions]
+
+export type CreepRole = AnyCreepRoleDefinition extends CreepRoleDefinition<
+  infer T,
+  any
+>
+  ? T
+  : never
+
+export type CreepRoleMemory = AnyCreepRoleDefinition extends CreepRoleDefinition<
+  any,
+  infer M
+>
+  ? M
+  : never
 
 export const run = (creep: Creep) => {
-  roleDefinitions[creep.memory.role].run(creep)
+  roleDefinitions[creep.memory.role.name].run(creep)
   performAction(creep)
 }

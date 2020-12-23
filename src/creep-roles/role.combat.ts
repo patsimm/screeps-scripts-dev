@@ -2,12 +2,13 @@ import { CreepRoleDefinition } from "./index"
 import { updateAction } from "../creep-actions/actions"
 
 const run = (creep: Creep) => {
-  if (!_.includes(["attacking"], creep.memory.action)) {
+  if (!_.includes(["attacking"], creep.memory.action.type)) {
     updateAction(creep, "attacking")
   }
 }
 
-const role: CreepRoleDefinition = {
+const role: CreepRoleDefinition<"combat", { name: "combat" }> = {
+  name: "combat",
   run,
   bodyParts: [
     [
@@ -25,6 +26,7 @@ const role: CreepRoleDefinition = {
       MOVE,
     ], // 490
   ],
+  initialMemory: { name: "combat" },
 }
 
 export default role

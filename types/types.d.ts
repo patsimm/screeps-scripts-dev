@@ -1,14 +1,12 @@
-import { CreepRole } from "../src/creep-roles"
+import { CreepRole, CreepRoleMemory } from "../src/creep-roles"
 import { LoDashStatic } from "lodash"
 import { CreepActionType } from "../src/creep-actions"
+import { CreepActionMemory } from "../src/creep-actions/actions"
 
 declare global {
   interface CreepMemory {
-    role: CreepRole
-    action: CreepActionType
-    actionTarget: Id<any>
-    actionCounter: number
-    triedTargets: Array<Id<any>>
+    role: CreepRoleMemory
+    action: CreepActionMemory
   }
 
   interface RoomMemory {
