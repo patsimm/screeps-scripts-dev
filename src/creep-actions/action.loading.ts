@@ -1,7 +1,12 @@
 import { isStructureOfType } from "../helpers"
-import { CreepAction, rerunAction } from "./actions"
+import { rerunAction } from "./actions"
+import {
+  buildAction,
+  CreepActionFunction,
+  CreepActionTargeter,
+} from "./build-action"
 
-const findTarget = (creep: Creep) => {
+const findTarget: CreepActionTargeter = (creep: Creep) => {
   let targets: Array<Creep | AnyStoreStructure> = []
 
   if (creep.memory.role.name !== "walker") {
@@ -59,7 +64,10 @@ const findTarget = (creep: Creep) => {
     .last()?.id
 }
 
-const perform = (creep: Creep, target: AnyStructure | Creep) => {
+const perform: CreepActionFunction = (
+  creep: Creep,
+  target: AnyStructure | Creep
+) => {
   if (target instanceof Creep) {
     if (target.store.getUsedCapacity(RESOURCE_ENERGY) < 5) {
       return rerunAction(creep)
@@ -76,13 +84,5 @@ const perform = (creep: Creep, target: AnyStructure | Creep) => {
     }
   }
 }
-
-const action: CreepAction<"loading"> = {
-  type: "loading",
-  findTarget,
-  perform,
-  // fallback: "harvesting",
-  icon: "📥",
-}
-
+const action = buildAction("loading", findTarget, perform, "📥")
 export default action

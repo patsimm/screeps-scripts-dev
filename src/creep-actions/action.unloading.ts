@@ -1,10 +1,25 @@
 import { isStructureOfType } from "../helpers"
-import { CreepAction, rerunAction } from "./actions"
+import { rerunAction } from "./actions"
+import {
+  buildAction,
+  CreepActionFunction,
+  CreepActionTargeter,
+} from "./build-action"
 
-const findTarget = (creep: Creep) => {
+export interface UnloadingOpts {
+  ignoreIds?: Id<any>[]
+}
+
+const findTarget: CreepActionTargeter<UnloadingOpts> = (
+  creep: Creep,
+  options: UnloadingOpts
+) => {
   const targets = creep.room.find(FIND_STRUCTURES, {
     filter: (structure) => {
       if (!isStructureOfType(structure, creep.room.memory.unloadOrder)) {
+        return false
+      }
+      if (options.ignoreIds && _.includes(options.ignoreIds, structure.id)) {
         return false
       }
       const store = structure.store as Store<RESOURCE_ENERGY, false>
@@ -32,7 +47,7 @@ const findTarget = (creep: Creep) => {
   )
 }
 
-const perform = (
+const perform: CreepActionFunction<UnloadingOpts> = (
   creep: Creep,
   target: AnyStoreStructure | StructureController
 ) => {
@@ -62,11 +77,6 @@ const perform = (
   }
 }
 
-const action: CreepAction<"unloading"> = {
-  type: "unloading",
-  findTarget,
-  perform,
-  icon: "📤",
-}
+const action = buildAction("unloading", findTarget, perform, "📤")
 
 export default action

@@ -1,7 +1,12 @@
 import { isStructureOfType } from "../helpers"
-import { CreepAction, rerunAction } from "./actions"
+import { rerunAction } from "./actions"
+import {
+  buildAction,
+  CreepActionFunction,
+  CreepActionTargeter,
+} from "./build-action"
 
-const findTarget = (creep: Creep) => {
+const findTarget: CreepActionTargeter = (creep: Creep) => {
   if (creep.getActiveBodyparts(WORK) < 0) {
     return undefined
   }
@@ -14,7 +19,7 @@ const findTarget = (creep: Creep) => {
   return source?.id
 }
 
-const perform = (creep: Creep, target: any) => {
+const perform: CreepActionFunction = (creep: Creep, target: any) => {
   if (creep.harvest(target) === ERR_NOT_IN_RANGE) {
     if (creep.moveTo(target) === ERR_NO_PATH) {
       return rerunAction(creep)
@@ -50,11 +55,5 @@ const perform = (creep: Creep, target: any) => {
   }
 }
 
-const action: CreepAction<"harvesting"> = {
-  type: "harvesting",
-  findTarget,
-  perform,
-  icon: "⛏",
-}
-
+const action = buildAction("harvesting", findTarget, perform, "⛏")
 export default action

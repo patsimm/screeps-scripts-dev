@@ -1,6 +1,10 @@
-import { CreepAction } from "./actions"
+import {
+  buildAction,
+  CreepActionFunction,
+  CreepActionTargeter,
+} from "./build-action"
 
-export const findTarget = (creep: Creep) => {
+export const findTarget: CreepActionTargeter = (creep: Creep) => {
   if (creep.getActiveBodyparts(WORK) < 0) {
     return undefined
   }
@@ -10,17 +14,12 @@ export const findTarget = (creep: Creep) => {
   }
 }
 
-export const perform = (creep: Creep, target: any) => {
+export const perform: CreepActionFunction = (creep: Creep, target: any) => {
   if (creep.upgradeController(target) == ERR_NOT_IN_RANGE) {
     creep.moveTo(target)
   }
 }
 
-const action: CreepAction<"upgrading"> = {
-  type: "upgrading",
-  findTarget,
-  perform,
-  icon: "⏫",
-}
+const action = buildAction("upgrading", findTarget, perform, "⏫")
 
 export default action

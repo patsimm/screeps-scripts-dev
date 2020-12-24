@@ -1,6 +1,11 @@
-import { CreepAction, rerunAction } from "./actions"
+import { rerunAction } from "./actions"
+import {
+  buildAction,
+  CreepActionFunction,
+  CreepActionTargeter,
+} from "./build-action"
 
-const findTarget = (creep: Creep) => {
+const findTarget: CreepActionTargeter = (creep: Creep) => {
   const lookResults = creep.room.lookForAtArea(
     LOOK_CREEPS,
     creep.pos.y - 1,
@@ -19,18 +24,13 @@ const findTarget = (creep: Creep) => {
   return loadingCreeps[0]?.id
 }
 
-const perform = (creep: Creep, target: Creep) => {
+const perform: CreepActionFunction = (creep: Creep, target: Creep) => {
   const status = creep.transfer(target, RESOURCE_ENERGY)
   if (status !== OK) {
     return rerunAction(creep)
   }
 }
 
-const action: CreepAction<"transferring"> = {
-  type: "transferring",
-  findTarget,
-  perform,
-  icon: "⛏",
-}
+const action = buildAction("transferring", findTarget, perform, "⛏")
 
 export default action

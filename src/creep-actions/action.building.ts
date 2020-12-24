@@ -1,6 +1,11 @@
-import { CreepAction, rerunAction } from "./actions"
+import { rerunAction } from "./actions"
+import {
+  buildAction,
+  CreepActionFunction,
+  CreepActionTargeter,
+} from "./build-action"
 
-const findTarget = (creep: Creep) => {
+const findTarget: CreepActionTargeter = (creep: Creep) => {
   const constructionSites = creep.room.find(FIND_MY_CONSTRUCTION_SITES)
   if (constructionSites.length === 0) {
     return undefined
@@ -19,7 +24,7 @@ const findTarget = (creep: Creep) => {
   return foundSite?.id || constructionSites[0]?.id
 }
 
-const perform = (creep: Creep, target: any) => {
+const perform: CreepActionFunction = (creep: Creep, target: any) => {
   const buildStatus = creep.build(target)
   if (buildStatus == OK) {
     return
@@ -30,12 +35,5 @@ const perform = (creep: Creep, target: any) => {
   }
 }
 
-const action: CreepAction<"building"> = {
-  type: "building",
-  findTarget,
-  perform,
-  // fallback: "repairing",
-  icon: "🚧",
-}
-
+const action = buildAction("building", findTarget, perform, "🚧")
 export default action

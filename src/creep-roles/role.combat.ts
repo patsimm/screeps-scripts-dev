@@ -1,5 +1,5 @@
 import { CreepRoleDefinition } from "./index"
-import { updateAction } from "../creep-actions/actions"
+import { updateAction } from "../creep-actions"
 
 const run = (creep: Creep) => {
   if (!_.includes(["attacking"], creep.memory.action.type)) {
