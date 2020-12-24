@@ -1,4 +1,5 @@
 import { openRectAround } from "./helpers"
+import * as tower from "./tower"
 
 export const run = (room: Room) => {
   if (room.controller) {
@@ -24,6 +25,14 @@ export const run = (room: Room) => {
       spawn.memory.pathsBuilt.push(source.id)
     }
   })
+
+  room
+    .find(FIND_MY_STRUCTURES)
+    .filter(
+      (structure): structure is StructureTower =>
+        structure.structureType === STRUCTURE_TOWER
+    )
+    .forEach(tower.run)
 }
 
 const currentAmountPlusBuildingSites = (
