@@ -55,10 +55,12 @@ const findTarget: CreepActionTargeter = (creep: Creep) => {
     )
     .sortBy((target) => {
       const distance = creep.pos.getRangeTo(target.pos)
-      const energy = (target.store as Store<
-        RESOURCE_ENERGY,
-        false
-      >).getUsedCapacity(RESOURCE_ENERGY)
+      const energy = _.min([
+        (target.store as Store<RESOURCE_ENERGY, false>).getUsedCapacity(
+          RESOURCE_ENERGY
+        ),
+        500,
+      ])
       return energy - 2 * distance + _.random(50)
     })
     .last()?.id
