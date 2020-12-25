@@ -1,8 +1,8 @@
 import {
-  buildAction,
+  CreepAction,
   CreepActionFunction,
   CreepActionTargeter,
-} from "./build-action"
+} from "./_action"
 
 export interface ClaimingOpts {
   flag?: Flag
@@ -32,5 +32,4 @@ const perform: CreepActionFunction<ClaimingOpts> = (
   }
 }
 
-const action = buildAction("claiming", findTarget, perform, "📯")
-export default action
+export default CreepAction("claiming", findTarget, perform, "📯")

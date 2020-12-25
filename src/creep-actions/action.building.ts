@@ -1,9 +1,9 @@
 import { rerunAction } from "./actions"
 import {
-  buildAction,
+  CreepAction,
   CreepActionFunction,
   CreepActionTargeter,
-} from "./build-action"
+} from "./_action"
 
 const findTarget: CreepActionTargeter = (creep: Creep) => {
   const constructionSites = creep.room.find(FIND_MY_CONSTRUCTION_SITES)
@@ -35,5 +35,4 @@ const perform: CreepActionFunction = (creep: Creep, target: any) => {
   }
 }
 
-const action = buildAction("building", findTarget, perform, "🚧")
-export default action
+export default CreepAction("building", findTarget, perform, "🚧")

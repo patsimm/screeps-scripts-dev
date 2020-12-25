@@ -1,10 +1,10 @@
 import { isStructureOfType } from "../helpers"
 import { rerunAction } from "./actions"
 import {
-  buildAction,
+  CreepAction,
   CreepActionFunction,
   CreepActionTargeter,
-} from "./build-action"
+} from "./_action"
 
 const findTarget: CreepActionTargeter = (creep: Creep) => {
   if (creep.getActiveBodyparts(WORK) < 0) {
@@ -55,5 +55,4 @@ const perform: CreepActionFunction = (creep: Creep, target: any) => {
   }
 }
 
-const action = buildAction("harvesting", findTarget, perform, "⛏")
-export default action
+export default CreepAction("harvesting", findTarget, perform, "⛏")

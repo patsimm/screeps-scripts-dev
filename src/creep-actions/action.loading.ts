@@ -1,10 +1,10 @@
 import { isStructureOfType } from "../helpers"
 import { rerunAction } from "./actions"
 import {
-  buildAction,
+  CreepAction,
   CreepActionFunction,
   CreepActionTargeter,
-} from "./build-action"
+} from "./_action"
 
 const findTarget: CreepActionTargeter = (creep: Creep) => {
   let targets: Array<Creep | AnyStoreStructure> = []
@@ -84,5 +84,5 @@ const perform: CreepActionFunction = (
     }
   }
 }
-const action = buildAction("loading", findTarget, perform, "📥")
-export default action
+
+export default CreepAction("loading", findTarget, perform, "📥")

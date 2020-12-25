@@ -1,8 +1,8 @@
 import {
-  buildAction,
+  CreepAction,
   CreepActionFunction,
   CreepActionTargeter,
-} from "./build-action"
+} from "./_action"
 
 const findTarget: CreepActionTargeter = (creep: Creep) => {
   const targets = creep.room.find(FIND_HOSTILE_CREEPS, {
@@ -17,5 +17,4 @@ const perform: CreepActionFunction = (creep: Creep, target: any) => {
   }
 }
 
-const action = buildAction("attacking", findTarget, perform, "⚔️")
-export default action
+export default CreepAction("attacking", findTarget, perform, "⚔️")

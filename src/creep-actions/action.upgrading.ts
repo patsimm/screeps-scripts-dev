@@ -1,8 +1,8 @@
 import {
-  buildAction,
+  CreepAction,
   CreepActionFunction,
   CreepActionTargeter,
-} from "./build-action"
+} from "./_action"
 
 export const findTarget: CreepActionTargeter = (creep: Creep) => {
   if (creep.getActiveBodyparts(WORK) < 0) {
@@ -20,6 +20,4 @@ export const perform: CreepActionFunction = (creep: Creep, target: any) => {
   }
 }
 
-const action = buildAction("upgrading", findTarget, perform, "⏫")
-
-export default action
+export default CreepAction("upgrading", findTarget, perform, "⏫")

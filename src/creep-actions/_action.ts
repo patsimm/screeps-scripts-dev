@@ -16,7 +16,7 @@ export interface CreepAction<T, Opts extends {}> {
   icon: string
 }
 
-export function buildAction<T extends string, Opts>(
+export function CreepAction<T extends string, Opts>(
   type: T,
   findTarget: CreepActionTargeter<Opts>,
   perform: CreepActionFunction<Opts>,

@@ -1,10 +1,10 @@
 import { isStructureOfType } from "../helpers"
 import { rerunAction } from "./actions"
 import {
-  buildAction,
+  CreepAction,
   CreepActionFunction,
   CreepActionTargeter,
-} from "./build-action"
+} from "./_action"
 
 export interface UnloadingOpts {
   ignoreIds?: Id<any>[]
@@ -77,6 +77,4 @@ const perform: CreepActionFunction<UnloadingOpts> = (
   }
 }
 
-const action = buildAction("unloading", findTarget, perform, "📤")
-
-export default action
+export default CreepAction("unloading", findTarget, perform, "📤")

@@ -7,7 +7,7 @@ import loading from "./action.loading"
 import transferring from "./action.transferring"
 import repairing from "./action.repairing"
 import claiming from "./action.claiming"
-import { CreepAction } from "./build-action"
+import { CreepAction } from "./_action"
 
 export const actions = {
   building,
