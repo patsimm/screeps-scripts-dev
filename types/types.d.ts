@@ -1,6 +1,5 @@
 import { CreepRole, CreepRoleMemory } from "../src/creep-roles"
 import { LoDashStatic } from "lodash"
-import { CreepActionType } from "../src/creep-actions"
 import { CreepActionMemory } from "../src/creep-actions/actions"
 
 declare global {

@@ -10,21 +10,23 @@ const run = (creep: Creep) => {
 const role: CreepRoleDefinition<"combat", { name: "combat" }> = {
   name: "combat",
   run,
-  bodyParts: [
-    [
-      ATTACK,
-      ATTACK,
-      ATTACK,
-      TOUGH,
-      TOUGH,
-      TOUGH,
-      TOUGH,
-      TOUGH,
-      MOVE,
-      MOVE,
-      MOVE,
-      MOVE,
-    ], // 490
+  levels: [
+    {
+      bodyParts: [
+        ATTACK,
+        ATTACK,
+        ATTACK,
+        TOUGH,
+        TOUGH,
+        TOUGH,
+        TOUGH,
+        TOUGH,
+        MOVE,
+        MOVE,
+        MOVE,
+        MOVE,
+      ], // 490
+    },
   ],
   initialMemory: { name: "combat" },
 }

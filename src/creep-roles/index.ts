@@ -18,7 +18,10 @@ import { performAction } from "../creep-actions"
 
 export type CreepRoleDefinition<Name, Memory extends { name: Name }> = {
   name: Name
-  bodyParts: BodyPartConstant[][]
+  levels: {
+    bodyParts: BodyPartConstant[]
+    shouldSpawn?: (spawn: StructureSpawn) => boolean
+  }[]
   run: (creep: Creep) => void
   initialMemory: Memory
 }

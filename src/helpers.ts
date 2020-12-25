@@ -1,3 +1,5 @@
+import { CreepRole } from "./creep-roles"
+
 export function isStructureOfType<T extends StructureConstant>(
   structure: Structure<any>,
   types: Array<T>
@@ -55,3 +57,13 @@ export const openRect = (x1: number, y1: number, x2: number, y2: number) => {
 
   return { positions: _.flatten([top, bottom, left, right]) }
 }
+
+export const getCreepsByRole = (room: Room) =>
+  _.groupBy(
+    room.find(FIND_MY_CREEPS),
+    (creep) => creep.memory.role.name
+  ) as Partial<
+    {
+      [key in CreepRole]: Creep[]
+    }
+  >

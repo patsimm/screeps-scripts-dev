@@ -25,6 +25,18 @@ export const run = (room: Room) => {
       spawn.memory.pathsBuilt.push(source.id)
     }
   })
+  if (
+    spawn.room.controller?.my &&
+    !_.includes(spawn.memory.pathsBuilt, spawn.room.controller.id)
+  ) {
+    const path = spawn.pos.findPathTo(spawn.room.controller.pos, {
+      ignoreCreeps: true,
+    })
+    _.slice(path, 0, path.length - 1).forEach((step) => {
+      room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD)
+    })
+    spawn.memory.pathsBuilt.push(spawn.room.controller.id)
+  }
 
   room
     .find(FIND_MY_STRUCTURES)

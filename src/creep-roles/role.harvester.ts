@@ -1,5 +1,6 @@
 import { CreepRoleDefinition } from "./index"
 import { updateAction } from "../creep-actions"
+import { shouldSpawnFirstLevel } from "./common"
 
 const run = (creep: Creep) => {
   if (
@@ -87,9 +88,14 @@ const role: CreepRoleDefinition<
 > = {
   name: "harvester",
   run,
-  bodyParts: [
-    [WORK, CARRY, MOVE, MOVE], // 250
-    [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], // 500
+  levels: [
+    {
+      bodyParts: [WORK, CARRY, MOVE, MOVE], // 250
+      shouldSpawn: shouldSpawnFirstLevel,
+    },
+    {
+      bodyParts: [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], // 500
+    },
   ],
   initialMemory: {
     filling: undefined,
