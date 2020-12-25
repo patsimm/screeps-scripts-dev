@@ -6,7 +6,6 @@ export type CreepRole<Name, Memory extends { name: Name }> = {
   }[]
   run: (creep: Creep) => void
   initialMemory: Memory
-  targetAmount: (spawn: StructureSpawn) => number
 }
 
 export const CreepRole = <T extends string, M extends {}>(
@@ -16,12 +15,10 @@ export const CreepRole = <T extends string, M extends {}>(
     shouldSpawn?: (spawn: StructureSpawn) => boolean
   }[],
   run: (creep: Creep) => void,
-  initialMemory: M,
-  targetAmount: (spawn: StructureSpawn) => number
+  initialMemory: M
 ): CreepRole<T, M & { name: T }> => ({
   name,
   levels,
   run,
   initialMemory: { name, ...initialMemory },
-  targetAmount,
 })

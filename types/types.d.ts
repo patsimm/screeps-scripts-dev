@@ -9,7 +9,9 @@ declare global {
   }
 
   interface RoomMemory {
-    creepTargetAmounts: { [key in CreepRoleName]: number }
+    creepTargetAmounts: {
+      [key in Exclude<CreepRoleName, "influencer">]: number
+    }
     buildOrder: BuildableStructureConstant[]
     unloadOrder: Array<
       | STRUCTURE_EXTENSION
@@ -32,6 +34,10 @@ declare global {
 
   interface Memory {
     creepCounter: { [key in CreepRoleName]: number }
+  }
+
+  interface FlagMemory {
+    influenced: boolean
   }
 
   const _: LoDashStatic

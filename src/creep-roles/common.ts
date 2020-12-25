@@ -10,3 +10,17 @@ export const shouldSpawnFirstLevel = (spawn: StructureSpawn): boolean => {
 
   return !(walkersExist && harvestersExist && extensions.length >= 5)
 }
+
+export const getInfluenceFlags = () =>
+  Object.keys(Game.flags)
+    .filter((flagName) => _(flagName.toLocaleLowerCase()).includes("influence"))
+    .map((flagName) => Game.flags[flagName])
+
+export const needCreepsOfRole = (
+  role: keyof RoomMemory["creepTargetAmounts"],
+  room: Room
+): boolean =>
+  room.memory.creepTargetAmounts[role] >
+  room.find(FIND_MY_CREEPS, {
+    filter: (creep) => creep.memory.role.name === role,
+  }).length

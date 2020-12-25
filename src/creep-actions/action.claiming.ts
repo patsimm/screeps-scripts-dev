@@ -20,12 +20,10 @@ const perform: CreepActionFunction<ClaimingOpts> = (
   target: StructureController
 ) => {
   const status = creep.claimController(target)
-  console.log(status)
   if (status === ERR_NOT_IN_RANGE) {
     creep.moveTo(target)
   } else if (status === ERR_GCL_NOT_ENOUGH) {
     const reserveStatus = creep.reserveController(target)
-    console.log(reserveStatus)
     if (reserveStatus === ERR_NOT_IN_RANGE) {
       creep.moveTo(target)
     }

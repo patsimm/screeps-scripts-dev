@@ -1,6 +1,6 @@
 import { updateAction } from "../creep-actions"
 import { isStructureOfType } from "../helpers"
-import { shouldSpawnFirstLevel } from "./common"
+import { needCreepsOfRole, shouldSpawnFirstLevel } from "./common"
 import { CreepRole } from "./_role"
 
 const run = (creep: Creep) => {
@@ -35,11 +35,14 @@ export default CreepRole(
   [
     {
       bodyParts: [WORK, CARRY, MOVE, MOVE], // 250
-      shouldSpawn: shouldSpawnFirstLevel,
+      shouldSpawn: (spawn): boolean =>
+        needCreepsOfRole("upgrader", spawn.room) &&
+        shouldSpawnFirstLevel(spawn),
     },
     {
       bodyParts: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], // 500
-      shouldSpawn: (spawn) =>
+      shouldSpawn: (spawn): boolean =>
+        needCreepsOfRole("upgrader", spawn.room) &&
         shouldSpawnFirstLevel(spawn) &&
         spawn.room.find(FIND_MY_STRUCTURES, {
           filter: (structure) =>
@@ -61,10 +64,9 @@ export default CreepRole(
         MOVE,
         MOVE,
       ], // 800
+      shouldSpawn: (spawn): boolean => needCreepsOfRole("upgrader", spawn.room),
     },
   ],
   run,
-  initialUpgraderMemory,
-  (spawn: StructureSpawn): number =>
-    spawn.room.memory.creepTargetAmounts["upgrader"]
+  initialUpgraderMemory
 )

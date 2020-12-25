@@ -1,5 +1,5 @@
 export const initialize = () => {
-  Memory.creeps = Memory.creeps || {}
+  Memory.creeps = _.defaults(Memory.creeps, {})
 
   Object.keys(Memory.creeps).forEach((creepName) => {
     if (!Game.creeps[creepName]) {
@@ -7,49 +7,54 @@ export const initialize = () => {
     }
   })
 
-  Memory.creepCounter = {
-    harvester: orDefault(Memory.creepCounter?.harvester, 0),
-    builder: orDefault(Memory.creepCounter?.builder, 0),
-    upgrader: orDefault(Memory.creepCounter?.upgrader, 0),
-    combat: orDefault(Memory.creepCounter?.combat, 0),
-    walker: orDefault(Memory.creepCounter?.walker, 0),
-    influencer: orDefault(Memory.creepCounter?.influencer, 0),
-  }
+  Memory.creepCounter = _.defaults(Memory.creepCounter, {
+    harvester: 0,
+    builder: 0,
+    upgrader: 0,
+    combat: 0,
+    walker: 0,
+    influencer: 0,
+  } as Memory["creepCounter"])
 
   for (const roomName in Game.rooms) {
     const room = Game.rooms[roomName]
-    room.memory.creepTargetAmounts = {
-      harvester: orDefault(room.memory.creepTargetAmounts?.harvester, 3),
-      builder: orDefault(room.memory.creepTargetAmounts?.builder, 3),
-      upgrader: orDefault(room.memory.creepTargetAmounts?.upgrader, 1),
-      combat: orDefault(room.memory.creepTargetAmounts?.combat, 0),
-      walker: orDefault(room.memory.creepTargetAmounts?.walker, 2),
-      influencer: orDefault(room.memory.creepTargetAmounts?.influencer, 0),
-    }
-    room.memory.buildOrder = room.memory.buildOrder || [
-      STRUCTURE_CONTAINER,
-      STRUCTURE_EXTENSION,
-      STRUCTURE_ROAD,
-    ]
-    room.memory.unloadOrder = room.memory.unloadOrder || [
-      STRUCTURE_SPAWN,
-      STRUCTURE_EXTENSION,
-      STRUCTURE_CONTAINER,
-      STRUCTURE_TOWER,
-    ]
+    room.memory = _.defaultsDeep(room.memory, {
+      creepTargetAmounts: {
+        harvester: 3,
+        builder: 3,
+        upgrader: 1,
+        combat: 0,
+        walker: 2,
+      },
+      buildOrder: [STRUCTURE_CONTAINER, STRUCTURE_EXTENSION, STRUCTURE_ROAD],
+      unloadOrder: [
+        STRUCTURE_SPAWN,
+        STRUCTURE_EXTENSION,
+        STRUCTURE_TOWER,
+        STRUCTURE_CONTAINER,
+      ],
+    } as RoomMemory)
   }
 
   for (const spawnName in Game.spawns) {
     const spawn = Game.spawns[spawnName]
-    spawn.memory.pathsBuilt = spawn.memory.pathsBuilt || []
+    spawn.memory = _.defaults(spawn.memory, {
+      pathsBuilt: [],
+    } as SpawnMemory)
   }
 
   for (const creepName in Game.creeps) {
     const creep = Game.creeps[creepName]
-    creep.memory.action.counter = 0
-    creep.memory.action.triedTargets = []
+    creep.memory.action = _.assign(creep.memory.action, {
+      counter: 0,
+      triedTargets: [],
+    } as Partial<CreepMemory["action"]>)
+  }
+
+  for (const flagName in Game.flags) {
+    const flag = Game.flags[flagName]
+    flag.memory = _.assign(flag.memory, {
+      influenced: false,
+    } as FlagMemory)
   }
 }
-
-const orDefault = (val: number | undefined, x: number) =>
-  typeof val === "number" ? val : x

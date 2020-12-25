@@ -1,4 +1,5 @@
 import { updateAction } from "../creep-actions"
+import { needCreepsOfRole } from "./common"
 import { CreepRole } from "./_role"
 
 const run = (creep: Creep) => {
@@ -28,11 +29,11 @@ export default CreepRole(
         MOVE,
         MOVE,
         MOVE,
-      ], // 490
+      ], // 490,
+      shouldSpawn: (spawn: StructureSpawn): boolean =>
+        needCreepsOfRole("combat", spawn.room),
     },
   ],
   run,
-  initialCombatMemory,
-  (spawn: StructureSpawn): number =>
-    spawn.room.memory.creepTargetAmounts["combat"]
+  initialCombatMemory
 )
