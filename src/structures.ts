@@ -15,27 +15,8 @@ export const run = (room: Room) => {
   }
 
   const spawn = room.find(FIND_MY_SPAWNS)[0]
-  const sources = room.find(FIND_SOURCES)
-  sources.forEach((source) => {
-    if (!_.includes(spawn.memory.pathsBuilt, source.id)) {
-      const path = spawn.pos.findPathTo(source.pos, { ignoreCreeps: true })
-      _.slice(path, 0, path.length - 1).forEach((step) => {
-        room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD)
-      })
-      spawn.memory.pathsBuilt.push(source.id)
-    }
-  })
-  if (
-    spawn.room.controller?.my &&
-    !_.includes(spawn.memory.pathsBuilt, spawn.room.controller.id)
-  ) {
-    const path = spawn.pos.findPathTo(spawn.room.controller.pos, {
-      ignoreCreeps: true,
-    })
-    _.slice(path, 0, path.length - 1).forEach((step) => {
-      room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD)
-    })
-    spawn.memory.pathsBuilt.push(spawn.room.controller.id)
+  if (spawn) {
+    buildRoads(spawn)
   }
 
   room
@@ -71,6 +52,32 @@ const buildExtensions = (room: Room, amount: number) => {
     _.forEach(possiblePositions, (pos) => {
       room.createConstructionSite(pos.x, pos.y, STRUCTURE_EXTENSION)
     })
+  }
+}
+
+const buildRoads = (spawn: StructureSpawn) => {
+  const room = spawn.room
+  const sources = room.find(FIND_SOURCES)
+  sources.forEach((source) => {
+    if (!_.includes(spawn.memory.pathsBuilt, source.id)) {
+      const path = spawn.pos.findPathTo(source.pos, { ignoreCreeps: true })
+      _.slice(path, 0, path.length - 1).forEach((step) => {
+        room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD)
+      })
+      spawn.memory.pathsBuilt.push(source.id)
+    }
+  })
+  if (
+    spawn.room.controller?.my &&
+    !_.includes(spawn.memory.pathsBuilt, spawn.room.controller.id)
+  ) {
+    const path = spawn.pos.findPathTo(spawn.room.controller.pos, {
+      ignoreCreeps: true,
+    })
+    _.slice(path, 0, path.length - 1).forEach((step) => {
+      room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD)
+    })
+    spawn.memory.pathsBuilt.push(spawn.room.controller.id)
   }
 }
 

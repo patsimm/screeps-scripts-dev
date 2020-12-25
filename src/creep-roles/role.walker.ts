@@ -1,6 +1,6 @@
-import { CreepRoleDefinition } from "./index"
 import { updateAction } from "../creep-actions"
 import { shouldSpawnFirstLevel } from "./common"
+import { CreepRole } from "./_role"
 
 export const run = (creep: Creep) => {
   const structuresBeingFilled = creep.room
@@ -39,10 +39,13 @@ export const run = (creep: Creep) => {
   }
 }
 
-const role: CreepRoleDefinition<"walker", { name: "walker" }> = {
-  name: "walker",
-  run,
-  levels: [
+interface WalkerMemory {}
+
+const initialWalkerMemory: WalkerMemory = {}
+
+export default CreepRole(
+  "walker",
+  [
     {
       bodyParts: [CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], // 300
       shouldSpawn: shouldSpawnFirstLevel,
@@ -62,7 +65,8 @@ const role: CreepRoleDefinition<"walker", { name: "walker" }> = {
       ], // 500,
     },
   ],
-  initialMemory: { name: "walker" },
-}
-
-export default role
+  run,
+  initialWalkerMemory,
+  (spawn: StructureSpawn): number =>
+    spawn.room.memory.creepTargetAmounts["walker"]
+)

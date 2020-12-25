@@ -13,6 +13,7 @@ export const initialize = () => {
     upgrader: orDefault(Memory.creepCounter?.upgrader, 0),
     combat: orDefault(Memory.creepCounter?.combat, 0),
     walker: orDefault(Memory.creepCounter?.walker, 0),
+    influencer: orDefault(Memory.creepCounter?.influencer, 0),
   }
 
   for (const roomName in Game.rooms) {
@@ -23,6 +24,7 @@ export const initialize = () => {
       upgrader: orDefault(room.memory.creepTargetAmounts?.upgrader, 1),
       combat: orDefault(room.memory.creepTargetAmounts?.combat, 0),
       walker: orDefault(room.memory.creepTargetAmounts?.walker, 2),
+      influencer: orDefault(room.memory.creepTargetAmounts?.influencer, 0),
     }
     room.memory.buildOrder = room.memory.buildOrder || [
       STRUCTURE_CONTAINER,

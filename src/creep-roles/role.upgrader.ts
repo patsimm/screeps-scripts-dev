@@ -1,6 +1,6 @@
-import { CreepRoleDefinition } from "./index"
 import { updateAction } from "../creep-actions"
 import { shouldSpawnFirstLevel } from "./common"
+import { CreepRole } from "./_role"
 
 const run = (creep: Creep) => {
   if (
@@ -25,10 +25,13 @@ const run = (creep: Creep) => {
   }
 }
 
-const role: CreepRoleDefinition<"upgrader", { name: "upgrader" }> = {
-  name: "upgrader",
-  run,
-  levels: [
+interface UpgraderMemory {}
+
+const initialUpgraderMemory: UpgraderMemory = {}
+
+export default CreepRole(
+  "upgrader",
+  [
     {
       bodyParts: [WORK, CARRY, MOVE, MOVE], // 250
       shouldSpawn: shouldSpawnFirstLevel,
@@ -37,7 +40,8 @@ const role: CreepRoleDefinition<"upgrader", { name: "upgrader" }> = {
       bodyParts: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], // 500
     },
   ],
-  initialMemory: { name: "upgrader" },
-}
-
-export default role
+  run,
+  initialUpgraderMemory,
+  (spawn: StructureSpawn): number =>
+    spawn.room.memory.creepTargetAmounts["upgrader"]
+)

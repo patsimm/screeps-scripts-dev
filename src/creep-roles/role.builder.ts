@@ -1,6 +1,6 @@
-import { CreepRoleDefinition } from "./index"
 import { updateAction } from "../creep-actions"
 import { shouldSpawnFirstLevel } from "./common"
+import { CreepRole } from "./_role"
 
 const run = (creep: Creep) => {
   if (
@@ -39,10 +39,13 @@ const run = (creep: Creep) => {
   }
 }
 
-const role: CreepRoleDefinition<"builder", { name: "builder" }> = {
-  name: "builder",
-  run,
-  levels: [
+interface BuilderMemory {}
+
+const initialBuilderMemory: BuilderMemory = {}
+
+export default CreepRole(
+  "builder",
+  [
     {
       bodyParts: [WORK, CARRY, MOVE, MOVE], // 250
       shouldSpawn: shouldSpawnFirstLevel,
@@ -51,9 +54,8 @@ const role: CreepRoleDefinition<"builder", { name: "builder" }> = {
       bodyParts: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], // 500
     },
   ],
-  initialMemory: {
-    name: "builder",
-  },
-}
-
-export default role
+  run,
+  initialBuilderMemory,
+  (spawn: StructureSpawn): number =>
+    spawn.room.memory.creepTargetAmounts["builder"]
+)

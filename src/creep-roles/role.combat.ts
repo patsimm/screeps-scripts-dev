@@ -1,5 +1,5 @@
-import { CreepRoleDefinition } from "./index"
 import { updateAction } from "../creep-actions"
+import { CreepRole } from "./_role"
 
 const run = (creep: Creep) => {
   if (!_.includes(["attacking"], creep.memory.action.type)) {
@@ -7,10 +7,13 @@ const run = (creep: Creep) => {
   }
 }
 
-const role: CreepRoleDefinition<"combat", { name: "combat" }> = {
-  name: "combat",
-  run,
-  levels: [
+interface CombatMemory {}
+
+const initialCombatMemory: CombatMemory = {}
+
+export default CreepRole(
+  "combat",
+  [
     {
       bodyParts: [
         ATTACK,
@@ -28,7 +31,8 @@ const role: CreepRoleDefinition<"combat", { name: "combat" }> = {
       ], // 490
     },
   ],
-  initialMemory: { name: "combat" },
-}
-
-export default role
+  run,
+  initialCombatMemory,
+  (spawn: StructureSpawn): number =>
+    spawn.room.memory.creepTargetAmounts["combat"]
+)

@@ -1,8 +1,7 @@
 import { getCreepsByRole } from "../helpers"
 
-export const shouldSpawnFirstLevel = (spawn: StructureSpawn) => {
+export const shouldSpawnFirstLevel = (spawn: StructureSpawn): boolean => {
   const creepsByRole = getCreepsByRole(spawn.room)
-
   const walkersExist = creepsByRole.walker && creepsByRole.walker.length > 0
   const harvestersExist =
     creepsByRole.harvester && creepsByRole.harvester.length > 0

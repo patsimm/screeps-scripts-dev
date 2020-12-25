@@ -3,7 +3,9 @@ import builder from "./role.builder"
 import upgrader from "./role.upgrader"
 import combat from "./role.combat"
 import walker from "./role.walker"
+import influencer from "./role.influencer"
 import { performAction } from "../creep-actions"
+import { CreepRole } from "./_role"
 
 /*
  * MOVE           50
@@ -16,31 +18,22 @@ import { performAction } from "../creep-actions"
  * TOUGH          10
  */
 
-export type CreepRoleDefinition<Name, Memory extends { name: Name }> = {
-  name: Name
-  levels: {
-    bodyParts: BodyPartConstant[]
-    shouldSpawn?: (spawn: StructureSpawn) => boolean
-  }[]
-  run: (creep: Creep) => void
-  initialMemory: Memory
+export const roleDefinitions = {
+  harvester,
+  builder,
+  upgrader,
+  combat,
+  walker,
+  influencer,
 }
 
-export const roleDefinitions = { harvester, builder, upgrader, combat, walker }
+export type AnyCreepRole = typeof roleDefinitions[keyof typeof roleDefinitions]
 
-export type AnyCreepRoleDefinition = typeof roleDefinitions[keyof typeof roleDefinitions]
-
-export type CreepRole = AnyCreepRoleDefinition extends CreepRoleDefinition<
-  infer T,
-  any
->
+export type CreepRoleName = AnyCreepRole extends CreepRole<infer T, any>
   ? T
   : never
 
-export type CreepRoleMemory = AnyCreepRoleDefinition extends CreepRoleDefinition<
-  any,
-  infer M
->
+export type CreepRoleMemory = AnyCreepRole extends CreepRole<any, infer M>
   ? M
   : never
 
@@ -48,3 +41,5 @@ export const run = (creep: Creep) => {
   roleDefinitions[creep.memory.role.name].run(creep)
   performAction(creep)
 }
+
+export { CreepRole } from "./_role"

@@ -6,6 +6,7 @@ import upgrading from "./action.upgrading"
 import loading from "./action.loading"
 import transferring from "./action.transferring"
 import repairing from "./action.repairing"
+import claiming from "./action.claiming"
 import { CreepAction } from "./build-action"
 
 export const actions = {
@@ -17,6 +18,7 @@ export const actions = {
   attacking,
   transferring,
   repairing,
+  claiming,
   idle: {
     type: "idle",
     findTarget: (creep: Creep) => creep.id,

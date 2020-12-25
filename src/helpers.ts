@@ -1,4 +1,4 @@
-import { CreepRole } from "./creep-roles"
+import { CreepRoleName } from "./creep-roles"
 
 export function isStructureOfType<T extends StructureConstant>(
   structure: Structure<any>,
@@ -64,6 +64,6 @@ export const getCreepsByRole = (room: Room) =>
     (creep) => creep.memory.role.name
   ) as Partial<
     {
-      [key in CreepRole]: Creep[]
+      [key in CreepRoleName]: Creep[]
     }
   >

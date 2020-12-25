@@ -1,15 +1,16 @@
-import { CreepRole, roleDefinitions } from "./creep-roles"
+import { CreepRole, CreepRoleName, roleDefinitions } from "./creep-roles"
 
-const spawnCreep = (spawn: StructureSpawn, role: CreepRole) => {
-  const roleDef = roleDefinitions[role]
-
-  roleDef.levels
+const spawnCreep = (
+  spawn: StructureSpawn,
+  role: CreepRole<CreepRoleName, any>
+) => {
+  role.levels
     .filter((level) => !level.shouldSpawn || level.shouldSpawn(spawn))
     .reverse()
     .some((level) => {
       const status = spawn.spawnCreep(
         level.bodyParts,
-        role + Memory.creepCounter[role],
+        role.name + Memory.creepCounter[role.name],
         {
           memory: {
             action: {
@@ -20,21 +21,21 @@ const spawnCreep = (spawn: StructureSpawn, role: CreepRole) => {
               opts: {},
               fallback: [],
             },
-            role: roleDefinitions[role].initialMemory,
+            role: role.initialMemory,
           },
         }
       )
       if (status === OK) {
         console.log(
           "Spawned creep '" +
-            role +
+            role.name +
             "' level " +
-            (roleDef.levels.indexOf(level) + 1) +
+            (role.levels.indexOf(level) + 1) +
             "[" +
             level.bodyParts +
             "]"
         )
-        Memory.creepCounter[role]++
+        Memory.creepCounter[role.name]++
         return true
       }
     })
@@ -44,17 +45,24 @@ export const run = (spawn: StructureSpawn) => {
   const creepsByRole = _.groupBy(
     spawn.room.find(FIND_MY_CREEPS),
     (creep) => creep.memory.role.name
-  ) as { [key in CreepRole]?: Creep[] }
+  ) as { [key in CreepRoleName]?: Creep[] }
 
   _.some(
-    ["harvester", "walker", "upgrader", "builder", "combat"] as const,
+    [
+      "harvester",
+      "walker",
+      "upgrader",
+      "builder",
+      "combat",
+      "influencer",
+    ] as const,
     (role) => {
-      if (
-        (creepsByRole[role]?.length || 0) <
-        spawn.room.memory.creepTargetAmounts[role]
-      ) {
+      const roleCreeps = creepsByRole[role]
+      const roleDef = roleDefinitions[role]
+
+      if ((roleCreeps?.length || 0) < roleDef.targetAmount(spawn)) {
         spawn.room.visual.text(role, spawn.pos)
-        spawnCreep(spawn, role)
+        spawnCreep(spawn, roleDef)
         return true
       }
     }

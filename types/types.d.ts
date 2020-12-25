@@ -1,4 +1,4 @@
-import { CreepRole, CreepRoleMemory } from "../src/creep-roles"
+import { CreepRoleName, CreepRoleMemory } from "../src/creep-roles"
 import { LoDashStatic } from "lodash"
 import { CreepActionMemory } from "../src/creep-actions/actions"
 
@@ -9,7 +9,7 @@ declare global {
   }
 
   interface RoomMemory {
-    creepTargetAmounts: { [key in CreepRole]: number }
+    creepTargetAmounts: { [key in CreepRoleName]: number }
     buildOrder: BuildableStructureConstant[]
     unloadOrder: Array<
       | STRUCTURE_EXTENSION
@@ -31,7 +31,7 @@ declare global {
   }
 
   interface Memory {
-    creepCounter: { [key in CreepRole]: number }
+    creepCounter: { [key in CreepRoleName]: number }
   }
 
   const _: LoDashStatic

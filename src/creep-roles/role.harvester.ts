@@ -1,6 +1,6 @@
-import { CreepRoleDefinition } from "./index"
 import { updateAction } from "../creep-actions"
 import { shouldSpawnFirstLevel } from "./common"
+import { CreepRole } from "./_role"
 
 const run = (creep: Creep) => {
   if (
@@ -82,13 +82,17 @@ const run = (creep: Creep) => {
   }
 }
 
-const role: CreepRoleDefinition<
+interface HarvesterMemory {
+  filling?: Id<any>
+}
+
+const initialMemory: HarvesterMemory = {
+  filling: undefined,
+}
+
+export default CreepRole(
   "harvester",
-  { name: "harvester"; filling: Id<StructureContainer> | undefined }
-> = {
-  name: "harvester",
-  run,
-  levels: [
+  [
     {
       bodyParts: [WORK, CARRY, MOVE, MOVE], // 250
       shouldSpawn: shouldSpawnFirstLevel,
@@ -97,10 +101,8 @@ const role: CreepRoleDefinition<
       bodyParts: [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], // 500
     },
   ],
-  initialMemory: {
-    filling: undefined,
-    name: "harvester",
-  },
-}
-
-export default role
+  run,
+  initialMemory,
+  (spawn: StructureSpawn): number =>
+    spawn.room.memory.creepTargetAmounts["harvester"]
+)
