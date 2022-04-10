@@ -1,8 +1,8 @@
 import { updateAction } from "../creep-actions"
 import { needCreepsOfRole, shouldSpawnFirstLevel } from "./common"
-import { CreepRole } from "./_role"
+import { CreepRole, CreepRoleFunction } from "./_role"
 
-const run = (creep: Creep) => {
+const run: CreepRoleFunction = (creep: Creep) => {
   if (
     !_.includes(
       [
@@ -41,7 +41,7 @@ const run = (creep: Creep) => {
 
 interface BuilderMemory {}
 
-const initialBuilderMemory: BuilderMemory = {}
+const initializeBuilderMemory = (): BuilderMemory => ({})
 
 export default CreepRole(
   "builder",
@@ -58,5 +58,5 @@ export default CreepRole(
     },
   ],
   run,
-  initialBuilderMemory
+  initializeBuilderMemory
 )

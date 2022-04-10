@@ -1,8 +1,8 @@
 import { updateAction } from "../creep-actions"
 import { needCreepsOfRole, shouldSpawnFirstLevel } from "./common"
-import { CreepRole } from "./_role"
+import { CreepRole, CreepRoleFunction } from "./_role"
 
-export const run = (creep: Creep) => {
+const run: CreepRoleFunction = (creep: Creep) => {
   const structuresBeingFilled = creep.room
     .find(FIND_MY_CREEPS, {
       filter: (creep) =>
@@ -41,7 +41,7 @@ export const run = (creep: Creep) => {
 
 interface WalkerMemory {}
 
-const initialWalkerMemory: WalkerMemory = {}
+const initializeWalkerMemory = (): WalkerMemory => ({})
 
 export default CreepRole(
   "walker",
@@ -67,5 +67,5 @@ export default CreepRole(
     },
   ],
   run,
-  initialWalkerMemory
+  initializeWalkerMemory
 )

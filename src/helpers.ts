@@ -58,12 +58,10 @@ export const openRect = (x1: number, y1: number, x2: number, y2: number) => {
   return { positions: _.flatten([top, bottom, left, right]) }
 }
 
-export const getCreepsByRole = (room: Room) =>
+export const getCreepsByRole = (room?: Room) =>
   _.groupBy(
-    room.find(FIND_MY_CREEPS),
+    room ? room.find(FIND_MY_CREEPS) : Object.values(Game.creeps),
     (creep) => creep.memory.role.name
-  ) as Partial<
-    {
-      [key in CreepRoleName]: Creep[]
-    }
-  >
+  ) as {
+    [key in CreepRoleName]: Creep[]
+  }

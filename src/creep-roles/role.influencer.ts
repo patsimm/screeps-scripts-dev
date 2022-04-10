@@ -1,8 +1,8 @@
 import { updateAction } from "../creep-actions"
 import { getInfluenceFlags } from "./common"
-import { CreepRole } from "./_role"
+import { CreepRole, CreepRoleFunction } from "./_role"
 
-export function run(creep: Creep) {
+const run: CreepRoleFunction = (creep: Creep) => {
   const influenceFlags = getInfluenceFlags()
   const flag = influenceFlags[0]
 
@@ -17,7 +17,7 @@ export function run(creep: Creep) {
 
 interface InfluencerMemory {}
 
-const initialInfluencerMemory: InfluencerMemory = {}
+const initializeInfluencerMemory = (): InfluencerMemory => ({})
 
 export default CreepRole(
   "influencer",
@@ -31,5 +31,5 @@ export default CreepRole(
     },
   ],
   run,
-  initialInfluencerMemory
+  initializeInfluencerMemory
 )

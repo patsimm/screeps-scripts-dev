@@ -16,6 +16,11 @@ export const getInfluenceFlags = () =>
     .filter((flagName) => _(flagName.toLocaleLowerCase()).includes("influence"))
     .map((flagName) => Game.flags[flagName])
 
+export const getPioneerFlags = () =>
+  Object.keys(Game.flags)
+    .filter((flagName) => _(flagName.toLocaleLowerCase()).includes("pioneer"))
+    .map((flagName) => Game.flags[flagName])
+
 export const needCreepsOfRole = (
   role: keyof RoomMemory["creepTargetAmounts"],
   room: Room

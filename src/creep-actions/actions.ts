@@ -7,6 +7,7 @@ import loading from "./action.loading"
 import transferring from "./action.transferring"
 import repairing from "./action.repairing"
 import claiming from "./action.claiming"
+import following from "./action.following"
 import { CreepAction } from "./_action"
 
 export const actions = {
@@ -19,6 +20,7 @@ export const actions = {
   transferring,
   repairing,
   claiming,
+  following,
   idle: {
     type: "idle",
     findTarget: (creep: Creep) => creep.id,
@@ -75,7 +77,7 @@ export const _updateAction = (
   opts: CreepActionOpts,
   fallback: CreepActionType[]
 ): void => {
-  const action = actions[newActionType]
+  const action: CreepAction<CreepActionType, any> = actions[newActionType]
   const actionTarget = action.findTarget(creep, opts)
   if (!actionTarget) {
     return fallback && _.first(fallback)

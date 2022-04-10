@@ -1,9 +1,10 @@
 import harvester from "./role.harvester"
 import builder from "./role.builder"
 import upgrader from "./role.upgrader"
-import combat from "./role.combat"
+import guard from "./role.guard"
 import walker from "./role.walker"
 import influencer from "./role.influencer"
+import pioneer from "./role.pioneer"
 import { performAction } from "../creep-actions"
 import { CreepRole } from "./_role"
 
@@ -22,9 +23,10 @@ export const roleDefinitions = {
   harvester,
   builder,
   upgrader,
-  combat,
+  guard,
   walker,
   influencer,
+  pioneer,
 }
 
 export type AnyCreepRole = typeof roleDefinitions[keyof typeof roleDefinitions]
@@ -36,6 +38,15 @@ export type CreepRoleName = AnyCreepRole extends CreepRole<infer T, any>
 export type CreepRoleMemory = AnyCreepRole extends CreepRole<any, infer M>
   ? M
   : never
+
+export type ConcreteCreepRole<T extends CreepRoleName> = Extract<
+  AnyCreepRole,
+  CreepRole<T, any>
+>
+
+export type ConcreteCreepRoleMemory<
+  T extends CreepRoleName
+> = ConcreteCreepRole<T> extends CreepRole<any, infer M> ? M : never
 
 export const run = (creep: Creep) => {
   roleDefinitions[creep.memory.role.name].run(creep)

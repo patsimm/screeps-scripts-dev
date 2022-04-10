@@ -11,9 +11,10 @@ export const initialize = () => {
     harvester: 0,
     builder: 0,
     upgrader: 0,
-    combat: 0,
+    guard: 0,
     walker: 0,
     influencer: 0,
+    pioneer: 0,
   } as Memory["creepCounter"])
 
   for (const roomName in Game.rooms) {
@@ -23,7 +24,6 @@ export const initialize = () => {
         harvester: 3,
         builder: 3,
         upgrader: 1,
-        combat: 0,
         walker: 2,
       },
       buildOrder: [STRUCTURE_CONTAINER, STRUCTURE_EXTENSION, STRUCTURE_ROAD],

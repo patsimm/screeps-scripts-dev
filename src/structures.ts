@@ -1,3 +1,4 @@
+import { getPioneerFlags } from "./creep-roles/common"
 import { openRectAround } from "./helpers"
 import * as tower from "./tower"
 
@@ -17,6 +18,10 @@ export const run = (room: Room) => {
   const spawn = room.find(FIND_MY_SPAWNS)[0]
   if (spawn) {
     buildRoads(spawn)
+  }
+
+  if (getPioneerFlags().filter((flag) => flag.room === room)[0]) {
+    //buildPioneerSites(room)
   }
 
   room
@@ -80,6 +85,33 @@ const buildRoads = (spawn: StructureSpawn) => {
     spawn.memory.pathsBuilt.push(spawn.room.controller.id)
   }
 }
+
+// const buildPioneerSites = (room: Room) => {
+//   const closestMyController = _(
+//     Object.values(Game.rooms).filter((room) => room.controller?.my)
+//   )
+//     .sortBy((myRoom) => Game.map.getRoomLinearDistance(room.name, myRoom.name))
+//     .first()?.controller
+
+//   if (room.controller && closestMyController) {
+//     const roomRoute = Game.map.findRoute(
+//       room.name,
+//       closestMyController.room.name
+//     )
+//     if (roomRoute !== ERR_NO_PATH) {
+//       [room, ...roomRoute.map()].
+//       const path = room.controller.pos.findPathTo(closestMyController.pos)
+//       _.slice(path, 0, path.length - 1).forEach((step) => {
+//         room.visual.circle(step.x, step.y)
+//       })
+//       console.log(path.length)
+//       console.log(
+//         roomRoute?.map((route) => route.room + " " + route.exit).join(", ")
+//       )
+//     }
+
+//   }
+// }
 
 const levelToExtensionAmount = {
   1: 0,

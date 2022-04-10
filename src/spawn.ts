@@ -24,7 +24,7 @@ const spawnCreep = (
             opts: {},
             fallback: [],
           },
-          role: role.initialMemory,
+          role: role.initializeMemory(spawn),
         },
       }
     )
@@ -52,7 +52,8 @@ export const run = (spawn: StructureSpawn) => {
       "walker",
       "upgrader",
       "builder",
-      "combat",
+      "guard",
+      "pioneer",
       "influencer",
     ] as const,
     (role) => {

@@ -1,9 +1,9 @@
 import { updateAction } from "../creep-actions"
 import { isStructureOfType } from "../helpers"
 import { needCreepsOfRole, shouldSpawnFirstLevel } from "./common"
-import { CreepRole } from "./_role"
+import { CreepRole, CreepRoleFunction } from "./_role"
 
-const run = (creep: Creep) => {
+const run: CreepRoleFunction = (creep: Creep) => {
   if (
     !_.includes(
       ["upgrading", "harvesting", "loading"],
@@ -28,7 +28,7 @@ const run = (creep: Creep) => {
 
 interface UpgraderMemory {}
 
-const initialUpgraderMemory: UpgraderMemory = {}
+const initializeUpgraderMemory = (): UpgraderMemory => ({})
 
 export default CreepRole(
   "upgrader",
@@ -68,5 +68,5 @@ export default CreepRole(
     },
   ],
   run,
-  initialUpgraderMemory
+  initializeUpgraderMemory
 )

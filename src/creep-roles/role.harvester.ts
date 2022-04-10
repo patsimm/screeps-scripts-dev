@@ -1,8 +1,8 @@
 import { updateAction } from "../creep-actions"
 import { needCreepsOfRole, shouldSpawnFirstLevel } from "./common"
-import { CreepRole } from "./_role"
+import { CreepRole, CreepRoleFunction } from "./_role"
 
-const run = (creep: Creep) => {
+const run: CreepRoleFunction = (creep: Creep) => {
   if (
     !_.includes(
       ["harvesting", "transferring", "unloading"],
@@ -86,9 +86,9 @@ interface HarvesterMemory {
   filling?: Id<any>
 }
 
-const initialMemory: HarvesterMemory = {
+const initializeMemory = (): HarvesterMemory => ({
   filling: undefined,
-}
+})
 
 export default CreepRole(
   "harvester",
@@ -106,5 +106,5 @@ export default CreepRole(
     },
   ],
   run,
-  initialMemory
+  initializeMemory
 )
